@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fab.className = 'fas fa-comment-dots text-2xl';
         
         // Resize iframe if in iframe context
-        resizeIframe(60, 60);
+        resizeIframe(71, 71);
         
         // If minimized, restore it when hidden
         if (isMinimized) {
