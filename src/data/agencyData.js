@@ -99,7 +99,7 @@ const companyProfile = {
   leadership: [
     { name: "Vraj Trivedi", role: "CEO & Founder" },
     { name: "Prem Parmar", role: "Design Chief & Co-Founder" },
-    { name: "rajdip khavad", role: "team leader(developing team lead)" },
+    { name: "rajdip khavad", role: "team leader(developing team lead),Chief of Development" },
   ],
 
   clientTestimonials: [

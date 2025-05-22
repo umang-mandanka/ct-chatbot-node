@@ -37,27 +37,73 @@ const processMessage = async (req, res) => {
     }
 
     // Create a system prompt that includes the company profile data
-    const systemPrompt = `You are a helpful AI assistant for ${companyProfile.companyOverview.name}. 
+    const systemPrompt = `You are the official, friendly, and professional chatbot for ${companyProfile.companyOverview.name} Follow these instructions exactly and without exception. 
+      GENERAL BEHAVIOR GUIDELINES
 
-     STRICT CONTENT RULES:
-    1. NEVER generate example emails, templates, or hypothetical scenarios
-    2. NEVER suggest steps or approaches that aren't explicitly mentioned in the data
-    3. NEVER create sample messages or outreach templates
-    4. NEVER provide advice beyond what's directly stated in the data
-    5. If asked how to approach or contact the agency, ONLY provide the contact information listed above
-    6. NEVER create or suggest content that isn't directly from the provided data
-    
-      FORMATTING INSTRUCTIONS:
-    1. Always structure your response with clear section titles
-    2. Use numbered lists (1, 2, 3) for any list items
-    3. Put section titles on their own line
-    4. Keep responses concise and directly related to the user's query
-    5. Only respond with information contained in the data provided above
-    6. Do not make up or invent information not included in this data
-    7. If asked about something not in the data, politely explain you don't have that information
-    
+Speak on behalf of CodeTheorem
+- Always use "we" to refer to the company, never “they” or “the company.”
 
-    Use ONLY the following information about the company to answer user questions accurately:
+Stay focused and factual
+- Only share clear, direct insights related to CodeTheorem’s actual work and capabilities.
+
+Be confident and conversational
+- Responses should sound helpful, human, and professional — never robotic or uncertain.
+
+Keep replies concise and structured
+- Use numbered or bulleted lists, bold headings, and minimal fluff.
+
+NEVER speculate or generalize
+- Do not guess, assume, or use generic/industry examples.
+- Only share specific, known CodeTheorem facts.
+
+FORBIDDEN PHRASES — DO NOT USE EVER
+You must NEVER use or reference the following words or phrases in any form:
+- “data”
+- “information”
+- “mentioned”
+- “provided”
+- “according to the provided…”
+- “based on the provided…”
+- “unfortunately…”
+- “No further information available.”
+- “No more information.”
+- “No additional information.”
+- ANY variation of these
+
+⚠️ ABSOLUTELY DO NOT SAY:
+- “The provided data does not mention...”
+- “Unfortunately, we don't have information on...”
+- “According to the case study…”
+- “Based on the information provided…”
+- “The data shows…”
+- “We recommend checking external resources…”
+
+IF ASKED ABOUT UNKNOWN TOPIC:
+If you’re asked about anything not clearly defined, respond with ONLY the following:
+
+“I don't have the details on [insert topic] handy right now, but I'd be happy to connect you with our team for more info!”
+
+⚠️ Do NOT add anything before or after. Do NOT elaborate or suggest alternatives. This is the ONLY permitted response.
+
+IF THERE IS SOME INFORMATION:
+If there is any information available about the topic, provide ONLY that information—do not add "No further information available", "No more information", "No additional information", or similar. Simply provide the available details and stop. Never state or imply that information is missing or limited—just answer with what you know.
+
+HARD RESTRICTIONS
+- NEVER reference “data,” “information,” or what is/isn’t “provided.”
+- NEVER recommend external resources (blogs, guides, case studies, FAQs, industry best practices, etc.).
+- NEVER create or suggest example content (emails, templates, steps, scenarios, or approaches).
+- NEVER list tools, strategies, or processes not already explicitly confirmed as used by CodeTheorem.
+- NEVER include closing lines like “What else would you like to know?”
+- NEVER use JSON or suggest sample questions — even if requested.
+- NEVER generate generic advice.
+
+FORMATTING & STYLE RULES
+1. **Use clear section titles**
+2. **Use numbered or bulleted lists for details**
+3. **Bold key phrases for emphasis**
+4. **Keep content concise and confident**
+5. **Use a friendly, conversational tone**
+
     
     Company Name: ${companyProfile.companyOverview.name}
     Founded: ${companyProfile.companyOverview.founded}
@@ -119,19 +165,13 @@ const processMessage = async (req, res) => {
    
   
     
-        IMPORTANT INSTRUCTIONS:
-     1. Your responses must be 100% based on the provided data. If you don't have specific information about something, simply state that you don't have that information.
-     2. NEVER include suggested questions, follow-up questions, or question lists in your response.
-     3. NEVER include JSON arrays in your response.
-     4. NEVER end your response with phrases like "Suggested Questions" or similar.
-     5. Keep your answers focused only on addressing the user's query directly.
-     6. Do not add any kind of "What else would you like to know?" or similar prompts at the end.
+   
      
      ` // End of prompt
      ;
 
     // Use OpenAI/Groq API to generate a response
-    console.log('Sending request to Groq API for message:', message);
+    
     
     try {
       // Make API call to Groq via OpenAI compatible interface
@@ -147,6 +187,10 @@ const processMessage = async (req, res) => {
             content: "CRITICAL INSTRUCTION: You must NEVER generate example emails, templates, or sample messages under any circumstances. If asked how to approach or contact the agency, ONLY provide the contact information (email/phone) from the data. Do not suggest email formats, templates, or sample messages. Do not create hypothetical content."
           },
           {
+            role: 'system',
+            content: "PERSONALITY INSTRUCTION: You are friendly, professional, and conversational. You represent CodeTheorem with enthusiasm and expertise. Your tone is warm and helpful, not robotic or formal. You should sound like a knowledgeable team member having a natural conversation. Avoid phrases that make you sound like an AI or that you're referencing a database of information."
+          },
+          {
             role: 'user',
             content: message
           }
@@ -156,9 +200,9 @@ const processMessage = async (req, res) => {
         top_p: 0.9
       });
       
-      console.log('Received response from Groq API');
+      
       let aiResponse = chatCompletion.choices[0].message.content;
-      console.log('Generated response (raw):', aiResponse);
+      
       
       // Remove any "Suggested Questions" section from the response if present
       // Use multiple patterns to catch different formats
@@ -168,112 +212,67 @@ const processMessage = async (req, res) => {
       
       // Remove any trailing colons, dashes, or other punctuation that might be left
       aiResponse = aiResponse.replace(/[:\-–—]\s*$/g, '').trim();
-      console.log('Cleaned response:', aiResponse);
-
-      // Dynamically generate suggested questions using Groq/Llama3
-      const generateQuestions = async () => {
-        try {
-          // Make a dedicated call to generate contextually relevant follow-up questions
-          const questionCompletion = await openai.chat.completions.create({
-            model: 'llama3-8b-8192',
-            messages: [
-              {
-                role: 'system',
-                content: `SYSTEM: You are a question generator for a chatbot interface. Your ONLY task is to generate 4 relevant follow-up questions based on the conversation context.
-
-CRITICAL INSTRUCTIONS:
-1. Your response must be ONLY a valid JSON array of strings containing questions.
-2. Do not include ANY explanation, markdown formatting, or additional text.
-3. Do not use backticks, do not label it as JSON, just return the raw array.
-4. These questions will be shown in a separate UI element, not in the main chat.
-5. Keep questions concise (under 60 characters if possible).
-
-Example of correct format: ["What services do you offer?", "How can I contact you?", "Tell me about your team", "What industries do you serve?"]
-
-Any text outside of a valid JSON array will cause errors.`
-              },
-              {
-                role: 'user',
-                content: `The user asked: "${message}"
-
-The assistant responded with information about: "${aiResponse.substring(0, 200)}..."
-
-Generate 4 relevant follow-up questions that would be natural for the user to ask next.`
-              }
-            ],
-            temperature: 0.7,
-            max_tokens: 256
-          });
-          
-          const rawQuestions = questionCompletion.choices[0].message.content.trim();
-          console.log('Raw generated questions:', rawQuestions);
-          
-          // Handle different response formats
-          let jsonStr = rawQuestions;
-          
-          // Remove any backticks if present (code blocks)
-          if (rawQuestions.includes('```')) {
-            jsonStr = rawQuestions.replace(/```json\n|```\n|```json|```/g, '');
-          }
-          
-          // Extract just the array if there's explanatory text
-          const arrayMatch = jsonStr.match(/\[(\s*"[^"]*"\s*,?\s*)+\]/s);
-          if (arrayMatch) {
-            jsonStr = arrayMatch[0];
-          }
-          
-          // Parse the JSON and validate it's an array of strings
-          const parsedQuestions = JSON.parse(jsonStr);
-          console.log('Parsed questions:', parsedQuestions);
-          
-          if (Array.isArray(parsedQuestions) && parsedQuestions.length > 0) {
-            return parsedQuestions;
-          } else {
-            console.error('Generated questions are not in the expected format');
-            return [
-              "What services do you offer?",
-              "Tell me about your case studies",
-              "How can I contact you?",
-              "Who is on your leadership team?"
-            ];
-          }
-        } catch (e) {
-          console.error('Error generating questions:', e, e.stack);
-          // Return default questions as fallback
-          return [
-            "What services do you offer?",
-            "Tell me about your case studies",
-            "How can I contact you?",
-            "Who is on your leadership team?"
-          ];
-        }
-      };
       
-      // Generate dynamic questions based on the conversation
-      try {
-        const suggestedQuestions = await generateQuestions();
-        console.log('Final suggested questions to send:', suggestedQuestions);
-        
-        return res.json({
-          response: aiResponse,
-          suggestedQuestions: suggestedQuestions
-        });
-      } catch (error) {
-        console.error('Error in final question generation:', error);
-        // Provide fallback questions if there's an error
-        return res.json({
-          response: aiResponse,
-          suggestedQuestions: [
-            "What services do you offer?",
-            "Tell me about your case studies",
-            "How can I contact you?",
-            "Who is on your leadership team?"
-          ]
-        });
+
+      // Static question pool provided by the user
+      const questionPool = [
+        "Who is the Chief of Development at Code Theorem?",
+        "What services does Code Theorem provide?",
+        "What solutions does Code Theorem offer?",
+        "What technologies does Code Theorem use?",
+        "What engagement models does Code Theorem offer?",
+        "What are some cultural traits of Code Theorem?",
+        "What tools does Code Theorem use?",
+        "What is Code Theorem’s development process?",
+        "What types of mobile apps does Code Theorem develop?",
+        "Why should I choose Code Theorem over freelancers?",
+        "What industries does Code Theorem serve?",
+        "What does Code Theorem do?",
+        "What blog posts has Code Theorem published?",
+        "Is Code Theorem a verified Clutch partner?",
+        "What case studies has Code Theorem published?",
+        "What is the case study for “Intromagic”?",
+        "What is the case study for “Emroll CRM”?",
+        "What is the case study for “Resume Pro”?",
+        "What is the case study for “Ezycheck App”?",
+        "What testimonials has Code Theorem received?",
+        "What did Intromagic say about Code Theorem?",
+        "What did their international client say about Code Theorem?",
+        "What industries does Code Theorem work with?",
+        "Does Code Theorem work with SaaS companies?",
+        "Does Code Theorem work in the EdTech industry?",
+        "Does Code Theorem provide services for eCommerce?",
+        "Is healthcare one of the industries Code Theorem works with?"
+      ];
+
+      // Shuffle function (Fisher-Yates)
+      function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+          [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
       }
+
+      // Track which questions have been used
+      if (!global._usedQuestions || global._usedQuestions.length >= questionPool.length) {
+        global._usedQuestions = [];
+      }
+      const unused = questionPool.filter(q => !global._usedQuestions.includes(q));
+      const shuffled = shuffle([...unused]);
+      const numToShow = Math.floor(Math.random() * 2) + 3; // 3 or 4
+      const suggestedQuestions = shuffled.slice(0, numToShow);
+      global._usedQuestions.push(...suggestedQuestions);
+
+      return res.json({
+        response: aiResponse,
+        suggestedQuestions: suggestedQuestions
+      });
     } catch (error) {
-      console.error('Error calling Groq API:', error);
-      console.error('Error details:', error.message);
+      
+      
       
       // Check if it's an API key error
       if (error.message.includes('API key')) {
@@ -300,9 +299,9 @@ Generate 4 relevant follow-up questions that would be natural for the user to as
       });
     }
   } catch (error) {
-    console.error('Error processing message:', error);
-    console.error('Error stack:', error.stack);
-    console.error('Request body was:', req.body);
+    
+    
+    
     
     // Send a more detailed error response
     return res.status(500).json({

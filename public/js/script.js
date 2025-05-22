@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded fired');
+    ('DOMContentLoaded fired');
     
     // DOM Elements
     const chatToggle = document.getElementById('chat-toggle');
     const chatbox = document.getElementById('chatbox');
     const closeChat = document.getElementById('close-chat');
-    const minimizeChat = document.getElementById('minimize-chat');
+    const maximizeChat = document.getElementById('maximize-chat');
     const refreshChat = document.getElementById('refresh-chat');
     const chatForm = document.getElementById('chat-form');
     const userInput = document.getElementById('user-input');
@@ -24,9 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
         welcomeDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
         
         const botAvatar = document.createElement('img');
-        botAvatar.src = './images/Logo-1.svg';
+        botAvatar.src = './images/Logo-1.png';
         botAvatar.alt = 'Bot';
-        botAvatar.className = 'h-8 w-8 rounded-full';
+        botAvatar.className = 'h-8 w-8 rounded-full bg-[#1350ff]';
         
         const messageContainer = document.createElement('div');
         messageContainer.className = 'bot-message max-w-[80%]';
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to render question chips (removes any previous chips)
     function renderQuestionChips(chipsArray) {
-        console.log('Rendering chips with data:', chipsArray);
+        ('Rendering chips with data:', chipsArray);
         
         // Remove any existing chips
         const existingChips = chatMessages.querySelector('.suggested-questions');
@@ -104,13 +104,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (isExpanded) {
                     // If already expanded, submit the question
-                    console.log('Submitting question:', question);
+                    ('Submitting question:', question);
                     userInput.value = question;
                     userInput.focus();
                     chatForm.dispatchEvent(new Event('submit'));
                 } else {
                     // First click - expand to show full question
-                    console.log('Expanding question chip:', question);
+                    ('Expanding question chip:', question);
                     
                     // Reset all other chips to collapsed state
                     document.querySelectorAll('.chip').forEach(c => {
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // State variables
     let isChatVisible = false;
-    let isMinimized = false;
+    let isMaximized = false;
     let chatOpened = false;
     
     // Initialize chat container and visibility state
@@ -149,23 +149,46 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to resize iframe if in iframe context
     function resizeIframe(width, height) {
         if (window.parent !== window) {
-            window.parent.postMessage({
-                type: 'chatbot-resize',
-                width,
-                height
-            }, '*');
+            // If maximized, use half of the viewport width and appropriate height
+            if (isMaximized) {
+                const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+                const viewportHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+                
+                width = Math.floor(viewportWidth * 0.5); // 50% of viewport width
+                height = Math.floor(viewportHeight * 0.7); // 70% of viewport height
+                
+                // Send the resize message with centered positioning
+                window.parent.postMessage({
+                    type: 'chatbot-resize',
+                    width,
+                    height,
+                    centered: true
+                }, '*');
+            } else {
+                // Normal resize for non-maximized state
+                window.parent.postMessage({
+                    type: 'chatbot-resize',
+                    width,
+                    height,
+                    centered: false
+                }, '*');
+            }
         }
     }
     
     // Open chat function
     function openChat() {
-        console.log('Opening chat...');
+        ('Opening chat...');
         chatbox.classList.remove('hidden');
         isChatVisible = true;
         fab.className = 'fas fa-times';
         
-        // Resize iframe if in iframe context
-        resizeIframe(400, 600);
+        // Resize iframe based on current state
+        if (isMaximized) {
+            resizeIframe(800, 600); // Will be adjusted by resizeIframe function
+        } else {
+            resizeIframe(400, 600);
+        }
         
         // We don't need to show welcome message on open anymore
         // as it's already added on page load
@@ -181,30 +204,23 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Close chat function
     function closeChatWindow() {
-        console.log('Closing chat...');
+        ('Closing chat...');
         chatbox.classList.add('hidden');
         isChatVisible = false;
         fab.className = 'fas fa-comment-dots text-2xl';
         
         // Resize iframe if in iframe context
         resizeIframe(71, 71);
-        
-        // If minimized, restore it when hidden
-        if (isMinimized) {
-            chatbox.classList.remove('minimized');
-            isMinimized = false;
-            minimizeChat.innerHTML = '<i class="fas fa-minus"></i>';
-        }
     }
     
     // Toggle chat visibility
     if (chatToggle && chatbox) {
         chatToggle.addEventListener('click', () => {
-            if (isMinimized) {
-                // If minimized, restore it first
-                chatbox.classList.remove('minimized');
-                isMinimized = false;
-                minimizeChat.innerHTML = '<i class="fas fa-minus"></i>';
+            // If maximized, return to normal state first
+            if (isMaximized) {
+                chatbox.classList.remove('maximized');
+                isMaximized = false;
+                maximizeChat.innerHTML = '<i class="fas fa-expand-arrows-alt"></i>';
             }
             
             if (chatbox.classList.contains('hidden')) {
@@ -217,6 +233,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add keyboard accessibility
         chatToggle.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
+                // If maximized, return to normal state first
+                if (isMaximized) {
+                    chatbox.classList.remove('maximized');
+                    isMaximized = false;
+                    maximizeChat.innerHTML = '<i class="fas fa-expand-arrows-alt"></i>';
+                }
+                
                 if (chatbox.classList.contains('hidden')) {
                     openChat();
                 } else {
@@ -233,14 +256,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Minimize/Maximize chat
-    if (minimizeChat && chatbox) {
-        minimizeChat.addEventListener('click', () => {
-            chatbox.classList.toggle('minimized');
-            isMinimized = chatbox.classList.contains('minimized');
-            minimizeChat.innerHTML = isMinimized ? 
-                '<i class="fas fa-expand-alt"></i>' : 
-                '<i class="fas fa-minus"></i>';
+    // Maximize chat
+    if (maximizeChat && chatbox) {
+        maximizeChat.addEventListener('click', () => {
+            // Toggle maximized state
+            chatbox.classList.toggle('maximized');
+            isMaximized = chatbox.classList.contains('maximized');
+            maximizeChat.innerHTML = isMaximized ? 
+                '<i class="fas fa-compress-arrows-alt"></i>' : 
+                '<i class="fas fa-expand-arrows-alt"></i>';
+                
+            // Resize iframe based on maximized state
+            if (isMaximized) {
+                resizeIframe(800, 600); // Will be adjusted by resizeIframe function
+            } else {
+                resizeIframe(400, 600);
+            }
+            
+            // Focus input field
+            setTimeout(() => {
+                if (userInput) userInput.focus();
+            }, 400);
         });
     }
     
@@ -347,8 +383,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Show typing indicator
-        typingIndicator.style.display = 'flex';
-        
+        typingIndicator.classList.remove('hidden');
+typingIndicator.classList.add('flex');
+typingIndicator.innerHTML = `
+    <div class="flex items-start gap-2">
+        <img src="./images/Logo-1.png" alt="Bot" class="h-8 w-8 rounded-full">
+        <div class="bg-primary/5 rounded-xl px-4 py-2 inline-block">
+            <div class="flex gap-1 items-center">
+                <span class="dot dot-1"></span>
+                <span class="dot dot-2"></span>
+                <span class="dot dot-3"></span>
+            </div>
+        </div>
+    </div>
+`;
         // Make sure chat is visible and not minimized
         if (chatbox.classList.contains('hidden')) {
             chatbox.classList.remove('hidden');
@@ -372,10 +420,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to send message to server
     async function sendMessageToServer(message) {
         try {
-            console.log('Preparing to send request to API');
+            ('Preparing to send request to API');
             // Send message to API
             const requestBody = JSON.stringify({ message });
-            console.log('Request body:', requestBody);
+            ('Request body:', requestBody);
             
             const response = await fetch('/api/chat/message', {
                 method: 'POST',
@@ -385,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: requestBody
             });
             
-            console.log('Response status:', response.status);
+            ('Response status:', response.status);
             
             if (!response.ok) {
                 const errorData = await response.json();
@@ -393,20 +441,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             const data = await response.json();
-            console.log('Parsed response data:', data);
+            ('Parsed response data:', data);
             
             // Hide typing indicator after a short delay to make it feel more natural
             setTimeout(() => {
-                typingIndicator.style.display = 'none';
+                typingIndicator.classList.add('hidden');
+typingIndicator.classList.remove('flex');
                 
                 if (data && data.response) {
                     // Add bot response to chat with formatting
-                    console.log('Adding bot response to chat:', data.response);
+                    ('Adding bot response to chat:', data.response);
                     const botDiv = document.createElement('div');
-                    botDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
+                    botDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in bg-[#1350ff]';
                     
                     const botAvatar = document.createElement('img');
-                    botAvatar.src = './images/Logo-1.svg';
+                    botAvatar.src = './images/Logo-1.png';
                     botAvatar.alt = 'Bot';
                     botAvatar.className = 'h-8 w-8 rounded-full';
                     
@@ -435,18 +484,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         // Always use the dynamically generated suggested questions from the server
                         if (Array.isArray(data.suggestedQuestions) && data.suggestedQuestions.length > 0) {
-                            console.log('Rendering dynamic question chips:', data.suggestedQuestions);
+                            ('Rendering dynamic question chips:', data.suggestedQuestions);
                             renderQuestionChips(data.suggestedQuestions);
                             // Scroll again to make sure chips are visible
                             scrollToBottom();
                         }
                     }, 500);
                 } else {
-                    console.error('No response data found in:', data);
+                    ('No response data found in:', data);
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'flex items-start gap-2 mb-2';
                     errorDiv.innerHTML = `
-                        <img src="./images/Logo-1.svg" alt="Bot" class="h-8 w-8 rounded-full">
+                        <img src="./images/Logo-1.svg" alt="Bot" class="h-8 w-8 rounded-full ">
                         <div class="bot-message max-w-[80%]">
                             <div>Sorry, I received an invalid response. Please try again.</div>
                             <div class="text-xs text-gray-400 mt-1">${getCurrentTime()}</div>
@@ -460,10 +509,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1000);
             
         } catch (error) {
-            console.error('Error in sendMessage:', error);
+            ('Error in sendMessage:', error);
             
             // Hide typing indicator
-            typingIndicator.style.display = 'none';
+            typingIndicator.classList.add('hidden');
+typingIndicator.classList.remove('flex');
             
             // Show error message
             const errorDiv = document.createElement('div');

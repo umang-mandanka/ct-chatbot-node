@@ -10,9 +10,9 @@ const PORT = process.env.PORT || 3000;
 
 // Check for Groq API key
 if (!process.env.GROQ_API_KEY) {
-  console.error('WARNING: GROQ_API_KEY environment variable is not set!');
-  console.error('Please create a .env file with your GROQ_API_KEY to use the chatbot.');
-  console.error('Example: GROQ_API_KEY=your-api-key-here');
+  ('WARNING: GROQ_API_KEY environment variable is not set!');
+  ('Please create a .env file with your GROQ_API_KEY to use the chatbot.');
+  ('Example: GROQ_API_KEY=your-api-key-here');
 }
 
 // Middleware
@@ -33,6 +33,6 @@ app.get('*', (req, res) => {
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-  console.log(`Open your browser and navigate to http://localhost:${PORT}`);
+  (`Server is running on http://localhost:${PORT}`);
+  (`Open your browser and navigate to http://localhost:${PORT}`);
 });

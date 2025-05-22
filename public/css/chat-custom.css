@@ -53,6 +53,25 @@ body {
   width: 400px;
 }
 
+/* Maximized Chatbox */
+.chatbox.maximized {
+  width: 50vw !important;
+  max-width: 800px !important;
+  height: 70vh !important;
+  position: fixed;
+  left: 50% !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
+.chatbox.maximized .chat-messages {
+  height: calc(70vh - 140px);
+  max-height: none;
+}
+
 /* Gradient Elements */
 .chat-header, .gradient-btn {
   background: linear-gradient(to right, var(--color-primary), #0039cc);
@@ -69,10 +88,12 @@ body {
   pointer-events: none;
 }
 
-.chatbox.minimized {
-  height: 60px !important;
-  overflow: hidden;
+.chatbox.maximized.hidden {
+  transform: translate(-50%, -50%) scale(0.95);
+  opacity: 0;
 }
+
+
 
 /* Chat Messages Container */
 .chat-messages {
@@ -263,6 +284,19 @@ body {
 .typing-indicator span:nth-child(3) {
   animation-delay: 0.4s;
 }
+
+.dot {
+  height: 8px;
+  width: 8px;
+  background-color: #1350ff;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 2px;
+  animation: typing 1.2s infinite ease-in-out both;
+}
+.dot-1 { animation-delay: 0s !important; }
+.dot-2 { animation-delay: 0.2s !important; }
+.dot-3 { animation-delay: 0.4s !important; }
 
 @keyframes typing {
   0%, 100% {
