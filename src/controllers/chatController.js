@@ -175,6 +175,7 @@ FORMATTING & STYLE RULES
     
     try {
       // Make API call to Groq via OpenAI compatible interface
+      console.log('Attempting to call Groq API with model: llama3-8b-8192');
       const chatCompletion = await openai.chat.completions.create({
         model: 'llama3-8b-8192', // Using Llama 3 8B model which is supported by Groq
         messages: [
@@ -266,16 +267,18 @@ FORMATTING & STYLE RULES
       const suggestedQuestions = shuffled.slice(0, numToShow);
       global._usedQuestions.push(...suggestedQuestions);
 
+      // Return the response to the client
       return res.json({
         response: aiResponse,
         suggestedQuestions: suggestedQuestions
       });
     } catch (error) {
-      
-      
+      // Log the full error for debugging
+      console.error('Error calling Groq API:', error);
       
       // Check if it's an API key error
-      if (error.message.includes('API key')) {
+      if (error.message && error.message.includes('API key')) {
+        console.error('API key error detected');
         return res.status(401).json({
           response: "I'm having trouble connecting to my knowledge base. Please check if the API key is correctly set in the .env file.",
           error: 'API key error',
@@ -284,10 +287,21 @@ FORMATTING & STYLE RULES
       }
       
       // Check if it's a model error
-      if (error.message.includes('model')) {
+      if (error.message && error.message.includes('model')) {
+        console.error('Model error detected');
         return res.status(400).json({
           response: "I'm having trouble processing your request. The AI model specified may not be available.",
           error: 'Model error',
+          details: error.message
+        });
+      }
+      
+      // Handle network errors
+      if (error.code === 'ENOTFOUND' || error.code === 'ETIMEDOUT' || error.code === 'ECONNREFUSED') {
+        console.error('Network error detected:', error.code);
+        return res.status(503).json({
+          response: "I'm having trouble connecting to the AI service. Please check your internet connection and try again.",
+          error: 'Network error',
           details: error.message
         });
       }
@@ -299,11 +313,8 @@ FORMATTING & STYLE RULES
       });
     }
   } catch (error) {
-    
-    
-    
-    
-    // Send a more detailed error response
+    // Send a more detailed error response for outer try-catch
+    console.error('Outer error handler caught:', error);
     return res.status(500).json({
       error: 'An error occurred while processing your message',
       details: error.message,
