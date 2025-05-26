@@ -1,18 +1,35 @@
-document.addEventListener('DOMContentLoaded', () => {
-    ('DOMContentLoaded fired');
-    
-    // DOM Elements
-    const chatToggle = document.getElementById('chat-toggle');
+// Utility to tell parent to resize iframe using state-based protocol
+function resizeIframeState(state, transitionDuration = 400) {
+    if (window.parent !== window) {
+        window.parent.postMessage({
+            type: 'chatbot-resize',
+            state: state,
+            transitionDuration: transitionDuration
+        }, '*');
+    }
+}
+
+
+
+// Global state variables
+let isChatVisible = false;
+let isMaximized = false;
+let chatOpened = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize DOM elements
     const chatbox = document.getElementById('chatbox');
+    const chatToggle = document.getElementById('chat-toggle');
     const closeChat = document.getElementById('close-chat');
     const maximizeChat = document.getElementById('maximize-chat');
     const refreshChat = document.getElementById('refresh-chat');
-    const chatForm = document.getElementById('chat-form');
     const userInput = document.getElementById('user-input');
     const chatMessages = document.getElementById('chat-messages');
     const typingIndicator = document.getElementById('typing-indicator');
     const welcomeTimestamp = document.getElementById('welcome-timestamp');
     const typingStatus = document.querySelector('.typing-status');
+    const fab = document.querySelector('#chat-toggle i'); // Moved fab declaration here to avoid redeclaration
+    const chatForm = document.getElementById('chat-form');
     
     // Add welcome message on page load
     addWelcomeMessage();
@@ -49,83 +66,42 @@ document.addEventListener('DOMContentLoaded', () => {
         renderQuestionChips([
             "What services do you offer?",
             "Tell me about your case studies",
-            "How can I contact you?",
-            "Who is on your leadership team?"
+            "How can I contact you?"
         ]);
+    }
+
+    // Utility function to truncate text for chips
+    function truncateText(text, maxLength = 25) {
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + '...';
     }
 
     // Function to render question chips (removes any previous chips)
     function renderQuestionChips(chipsArray) {
-        ('Rendering chips with data:', chipsArray);
-        
         // Remove any existing chips
         const existingChips = chatMessages.querySelector('.suggested-questions');
         if (existingChips) {
             existingChips.remove();
         }
-        
         // Don't render if no questions
         if (!chipsArray || !chipsArray.length) {
-            console.warn('No question chips to render');
             return;
         }
-        
         // Create container for suggested questions
         const suggestedQuestionsDiv = document.createElement('div');
-        suggestedQuestionsDiv.className = 'suggested-questions flex flex-wrap gap-2 mt-4 mb-4 animate-fade-in';
-        
-        // Add a title to make it more visible
-        const titleElement = document.createElement('div');
-        titleElement.className = 'w-full text-sm text-gray-500 mb-2';
-        titleElement.textContent = 'Suggested questions:';
-        suggestedQuestionsDiv.appendChild(titleElement);
-        
-        // Function to truncate text
-        const truncateText = (text, maxLength = 25) => {
-            if (text.length <= maxLength) return text;
-            return text.substring(0, maxLength) + '...';
-        };
-        
-        // Create each chip with truncated text
-        chipsArray.forEach(question => {
+        // Align chips to the left and allow multiple
+        suggestedQuestionsDiv.className = 'suggested-questions flex justify-start my-4';
+        // Show up to 3 chips
+        const chipsToShow = chipsArray.slice(0, 3);
+        chipsToShow.forEach((question) => {
             const chip = document.createElement('div');
-            chip.className = 'chip cursor-pointer';
+            chip.className = 'chip';
             chip.setAttribute('data-question', question);
-            chip.setAttribute('data-expanded', 'false');
-            chip.setAttribute('title', question); // Show full question on hover
-            
-            // Display truncated version of the question
-            const truncatedQuestion = truncateText(question);
-            chip.textContent = truncatedQuestion;
-            
-            // Add click event with toggle behavior
+            chip.textContent = truncateText(question, 40); // allow a bit longer for single chip
+            chip.title = question;
             chip.addEventListener('click', function() {
-                const isExpanded = this.getAttribute('data-expanded') === 'true';
-                
-                if (isExpanded) {
-                    // If already expanded, submit the question
-                    ('Submitting question:', question);
-                    userInput.value = question;
-                    userInput.focus();
-                    chatForm.dispatchEvent(new Event('submit'));
-                } else {
-                    // First click - expand to show full question
-                    ('Expanding question chip:', question);
-                    
-                    // Reset all other chips to collapsed state
-                    document.querySelectorAll('.chip').forEach(c => {
-                        if (c !== this) {
-                            c.setAttribute('data-expanded', 'false');
-                            c.textContent = truncateText(c.getAttribute('data-question'));
-                            c.classList.remove('expanded');
-                        }
-                    });
-                    
-                    // Expand this chip
-                    this.textContent = question;
-                    this.setAttribute('data-expanded', 'true');
-                    this.classList.add('expanded');
-                }
+                userInput.value = question;
+                chatForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
             });
             
             suggestedQuestionsDiv.appendChild(chip);
@@ -138,64 +114,20 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(scrollToBottom, 100);
     }
     
-    // State variables
-    let isChatVisible = false;
-    let isMaximized = false;
-    let chatOpened = false;
-    
-    // Initialize chat container and visibility state
-    const fab = document.querySelector('#chat-toggle i');
-    
-    // Function to resize iframe if in iframe context
-    function resizeIframe(width, height) {
-        if (window.parent !== window) {
-            // If maximized, use half of the viewport width and appropriate height
-            if (isMaximized) {
-                const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-                const viewportHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-                
-                width = Math.floor(viewportWidth * 0.5); // 50% of viewport width
-                height = Math.floor(viewportHeight * 0.7); // 70% of viewport height
-                
-                // Send the resize message with centered positioning
-                window.parent.postMessage({
-                    type: 'chatbot-resize',
-                    width,
-                    height,
-                    centered: true
-                }, '*');
-            } else {
-                // Normal resize for non-maximized state
-                window.parent.postMessage({
-                    type: 'chatbot-resize',
-                    width,
-                    height,
-                    centered: false
-                }, '*');
-            }
-        }
-    }
+    // Initialize chat container and visibility state - using global state variables
     
     // Open chat function
     function openChat() {
-        ('Opening chat...');
+        //('Opening chat...');
         chatbox.classList.remove('hidden');
         isChatVisible = true;
         fab.className = 'fas fa-times';
-        
-        // Resize iframe based on current state
-        if (isMaximized) {
-            resizeIframe(800, 600); // Will be adjusted by resizeIframe function
-        } else {
-            resizeIframe(400, 600);
-        }
-        
+        resizeIframeState('open');
         // We don't need to show welcome message on open anymore
         // as it's already added on page load
         if (!chatOpened) {
             chatOpened = true;
         }
-        
         // Focus input field after animation completes
         setTimeout(() => {
             if (userInput) userInput.focus();
@@ -204,13 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Close chat function
     function closeChatWindow() {
-        ('Closing chat...');
+        //('Closing chat...');
         chatbox.classList.add('hidden');
         isChatVisible = false;
         fab.className = 'fas fa-comment-dots text-2xl';
-        
-        // Resize iframe if in iframe context
-        resizeIframe(71, 71);
+        // Use a slightly longer transition for smooth shrink
+        resizeIframeState('minimized', 500); // Use new protocol with custom duration
     }
     
     // Toggle chat visibility
@@ -233,13 +164,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add keyboard accessibility
         chatToggle.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                // If maximized, return to normal state first
                 if (isMaximized) {
                     chatbox.classList.remove('maximized');
                     isMaximized = false;
                     maximizeChat.innerHTML = '<i class="fas fa-expand-arrows-alt"></i>';
                 }
-                
                 if (chatbox.classList.contains('hidden')) {
                     openChat();
                 } else {
@@ -259,26 +188,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Maximize chat
     if (maximizeChat && chatbox) {
         maximizeChat.addEventListener('click', () => {
+            // Add transitioning class to prevent flickering
+            chatbox.classList.add('transitioning');
+            
+            // Force a reflow to ensure the class is applied
+            void chatbox.offsetWidth;
+            
             // Toggle maximized state
             chatbox.classList.toggle('maximized');
             isMaximized = chatbox.classList.contains('maximized');
-            maximizeChat.innerHTML = isMaximized ? 
-                '<i class="fas fa-compress-arrows-alt"></i>' : 
-                '<i class="fas fa-expand-arrows-alt"></i>';
-                
-            // Resize iframe based on maximized state
-            if (isMaximized) {
-                resizeIframe(800, 600); // Will be adjusted by resizeIframe function
-            } else {
-                resizeIframe(400, 600);
-            }
             
-            // Focus input field
+            // Update the maximize button icon
+            maximizeChat.innerHTML = isMaximized
+                ? '<i class="fas fa-compress-arrows-alt"></i>'
+                : '<i class="fas fa-expand-arrows-alt"></i>';
+            
+            // Resize iframe with small delay
             setTimeout(() => {
+                if (isMaximized) {
+                    resizeIframeState('maximized');
+                } else {
+                    resizeIframeState('open');
+                }
+            }, 50);
+            
+            // Remove transitioning class after animation completes
+            setTimeout(() => {
+                chatbox.classList.remove('transitioning');
                 if (userInput) userInput.focus();
-            }, 400);
+            }, 400); // Match CSS transition duration
         });
     }
+      
     
     // Refresh chat functionality
     if (refreshChat && chatMessages) {
@@ -318,14 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Handle suggested questions
-    document.querySelectorAll('.chip').forEach(chip => {
-        chip.addEventListener('click', function() {
-            const question = this.getAttribute('data-question');
-            userInput.value = question;
-            userInput.focus();
-        });
-    });
+    
 
     // Chat form submission
     if (chatForm && userInput && chatMessages) {
@@ -392,22 +326,13 @@ typingIndicator.innerHTML = `
             <div class="flex gap-1 items-center">
                 <span class="dot dot-1"></span>
                 <span class="dot dot-2"></span>
-                <span class="dot dot-3"></span>
             </div>
-        </div>
-    </div>
-`;
-        // Make sure chat is visible and not minimized
+        `;
+        // Make sure chat is visible
         if (chatbox.classList.contains('hidden')) {
             chatbox.classList.remove('hidden');
             isChatVisible = true;
             fab.className = 'fas fa-times';
-        }
-        
-        if (chatbox.classList.contains('minimized')) {
-            chatbox.classList.remove('minimized');
-            isMinimized = false;
-            minimizeChat.innerHTML = '<i class="fas fa-minus"></i>';
         }
         
         // Send message to server

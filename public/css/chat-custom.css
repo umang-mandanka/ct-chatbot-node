@@ -46,29 +46,88 @@ body {
 /* Chatbox Container */
 .chatbox {
   box-shadow: var(--shadow-xl);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  bottom: 80px !important; /* Position it just above the chat icon */
-  right: 20px !important; /* Align with the chat icon */
-  max-width: 35%!important;
-  width: 400px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 16px;
+  background: white;
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  width: 350px;
+  max-width: 35vw;
+  height: 500px;
+  max-height: 70vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 10000;
+  transform-origin: bottom right;
+  opacity: 1;
+  transform: scale(1);
 }
 
-/* Maximized Chatbox */
+/* Maximized state */
 .chatbox.maximized {
-  width: 50vw !important;
-  max-width: 800px !important;
-  height: 70vh !important;
-  position: fixed;
-  left: 50% !important;
-  top: 50% !important;
-  right: auto !important;
-  bottom: auto !important;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
+  width: 90vw !important;
+  height: 90vh !important;
+  max-width: 50vw !important;
+  max-height: 80vh !important;
 }
+
+/* Transitioning state */
+.chatbox.transitioning {
+  transition: none !important;
+}
+
+/* For smooth transition back to default size */
+.chatbox:not(.maximized) {
+  width: 100%;
+  max-width: 35%;
+  height: 100%;
+  max-height: 65%;
+  bottom: 80px;
+  right: 24px;
+  left: auto;
+  top: auto;
+}
+
+/* Responsive: keep transitions for mobile */
+@media (max-width: 768px) {
+  .chatbox {
+    width: 90%;
+    max-width: 90%;
+    bottom: 80px; /* Position it just above the chat icon */
+  right: 24px; /* Consistent with iframe's 24px spacing */
+  }
+  .chatbox.maximized {
+    width: 100%;
+    max-width: 50%;
+    height: 100%;
+ 
+    bottom: 80px; /* Position it just above the chat icon */
+    right: 24px; /* Consistent with iframe's 24px spacing */
+  }
+}
+
+@media (max-width: 480px) {
+  .chatbox {
+    width: 100%;
+    max-width: 100%;
+    bottom: 80px; /* Position it just above the chat icon */
+  right: 24px; /* Consistent with iframe's 24px spacing */
+  }
+  .chatbox.maximized {
+    width: 100%;
+    max-width: 50%;
+    height: 100%;
+   
+    bottom: 80px; /* Position it just above the chat icon */
+    right: 24px; /* Consistent with iframe's 24px spacing */
+  }
+}
+
 
 .chatbox.maximized .chat-messages {
-  height: calc(70vh - 140px);
+  height: 100%;
   max-height: none;
 }
 
@@ -86,11 +145,13 @@ body {
   transform: translateY(20px) scale(0.95);
   opacity: 0;
   pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease-out;
 }
 
 .chatbox.maximized.hidden {
   transform: translate(-50%, -50%) scale(0.95);
   opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease-out;
 }
 
 
@@ -100,8 +161,8 @@ body {
   overflow-y: auto;
   scroll-behavior: smooth;
   padding: 1rem;
-  height: 350px;
-  max-height: 60vh;
+  height: 100%;
+  max-height: 100%;
 }
 
 /* User Message */
@@ -385,8 +446,8 @@ body {
 #user-input {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
-  padding-left: 20px !important;
-  padding-right: 20px !important;
+  padding-left: 20px;
+  padding-right: 20px;
   padding-top: 12px !important;
   padding-bottom: 12px !important;
 }
@@ -496,15 +557,18 @@ body {
 .chip {
   background-color: var(--color-primary-light);
   color: var(--color-primary);
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.5rem;
   border-radius: 9999px;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  white-space: normal; /* Allow text wrapping */
-  max-width: 100%; /* Ensure it doesn't exceed container width */
-  word-break: break-word; /* Break words if needed */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90vw;
+  display: inline-block;
+  margin: 0;
 }
 
 .chip:hover {
@@ -515,33 +579,37 @@ body {
 /* Container for chips */
 .suggested-questions {
   display: flex;
-  flex-wrap: wrap; /* Allow chips to wrap to next line */
-  gap: 0.5rem; /* Space between chips */
-  padding: 0.5rem;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  width: 100%;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .chatbox {
-    width: 90% !important;
-    max-width: 90% !important;
-    right: 5% !important;
-    bottom: 80px !important;
+    width: 90%;
+  max-width: 90%;
+    bottom: 80px; /* Position it just above the chat icon */
+    right: 24px; /* Consistent with iframe's 24px spacing */
   }
   
   .chat-messages {
-    height: 300px;
+    height: 100%;
   }
 }
 
 @media (max-width: 480px) {
   .chatbox {
-    width: 95% !important;
-    max-width: 95% !important;
-    right: 2.5% !important;
+    width: 100%;
+  max-width: 100%;
+   bottom: 80px; /* Position it just above the chat icon */
+  right: 24px; /* Consistent with iframe's 24px spacing */
   }
   
   .chat-messages {
-    height: 250px;
+    height: 100%;
   }
 }
