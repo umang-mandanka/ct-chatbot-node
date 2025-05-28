@@ -1,0 +1,32 @@
+/* Bullet point and numbered list styling */
+.bot-list, .bot-numbered-list {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.bot-list-item, .bot-numbered-item {
+  margin-bottom: 0.3rem;
+  position: relative;
+}
+
+.bot-list {
+  list-style-type: disc;
+}
+
+.bot-numbered-list {
+  list-style-type: decimal;
+}
+
+/* Ensure proper spacing for list items */
+.bot-list li:last-child, .bot-numbered-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* Improve contact info display */
+.contact-info {
+  white-space: normal;
+  color: #2356a8;
+  font-weight: 500;
+  display: inline-block;
+  word-break: keep-all;
+}

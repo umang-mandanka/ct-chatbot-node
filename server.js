@@ -1,4 +1,5 @@
 require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -10,9 +11,9 @@ const PORT = process.env.PORT || 3000;
 
 // Check for Groq API key
 if (!process.env.GROQ_API_KEY) {
-  ('WARNING: GROQ_API_KEY environment variable is not set!');
-  ('Please create a .env file with your GROQ_API_KEY to use the chatbot.');
-  ('Example: GROQ_API_KEY=your-api-key-here');
+  console.log('WARNING: GROQ_API_KEY environment variable is not set!');
+  console.log('Please create a .env file with your GROQ_API_KEY to use the chatbot.');
+  console.log('Example: GROQ_API_KEY=your-api-key-here');
 }
 
 // Middleware
@@ -35,8 +36,18 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err.stack);
+  res.status(500).json({
+    error: 'An error occurred on the server',
+    errorType: 'server_error',
+    message: err.message
+  });
+});
+
 // Start the server
 app.listen(PORT, () => {
-  (`Server is running on http://localhost:${PORT}`);
-  (`Open your browser and navigate to http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Open your browser and navigate to http://localhost:${PORT}`);
 });

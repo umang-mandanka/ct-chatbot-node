@@ -174,7 +174,7 @@ body {
   margin-left: auto;
   box-shadow: var(--shadow-sm);
   animation: fadeIn 0.3s ease-out;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem; /* Reduced from 1.5rem */
 }
 
 /* Bot Message */
@@ -185,7 +185,7 @@ body {
   padding: 0.75rem 1rem;
   box-shadow: var(--shadow-sm);
   animation: fadeIn 0.3s ease-out;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem; /* Reduced from 1.5rem */
   white-space: pre-line; /* Preserve line breaks */
 }
 
@@ -194,8 +194,8 @@ body {
   color: #4a86e8;
   font-size: 1.1rem;
   font-weight: 600;
-  margin-top: 0.75rem;
-  margin-bottom: 0.25rem;
+   /* margin-top: 0.5rem;
+  margin-bottom: 0.25rem;  */
   display: flex;
   align-items: center;
   padding-bottom: 0.25rem;
@@ -207,15 +207,15 @@ body {
   color: #1350ff;
   font-weight: 600;
   font-size: 1.05rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   display: inline-block;
 }
 
 /* Testimonial styling */
-.bot-message ul li {
+/* .bot-message ul li {
   margin-bottom: 1rem;
-}
+} */
 
 .bot-message ul li:last-child {
   margin-bottom: 0;
@@ -263,8 +263,8 @@ body {
 
 /* Industry items styling */
 .industry-item {
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem; /* Reduced from 1rem */
+  padding-bottom: 0.25rem; /* Reduced from 0.5rem */
 }
 
 .industry-item:last-child {
@@ -277,9 +277,11 @@ body {
 
 /* Contact info (phone, email) - keep together and subtle */
 .contact-info {
-  white-space: nowrap;
+  white-space: normal; /* Changed from nowrap to fix mobile number display */
   color: #2356a8;
   font-weight: 500;
+  display: inline-block; /* Added to improve mobile number display */
+  word-break: keep-all; /* Prevent breaking in the middle of numbers */
 }
 
 /* Step number and title beside each other for chatbot lists */
@@ -358,8 +360,9 @@ li.step-list-item {
 /* Numbered Items */
 .numbered-item {
   display: flex;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem; /* Reduced from 0.75rem */
   padding: 0.25rem 0;
+  align-items: flex-start; /* Added to align number with text */
 }
 
 .list-number {
@@ -370,9 +373,14 @@ li.step-list-item {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem; /* Added to better align with text */
 }
 
-/* Highlight styles for different elements */
 .highlight {
   color: var(--color-primary);
   font-weight: 600;
@@ -432,14 +440,14 @@ li.step-list-item {
 
 /* Q&A Formatting */
 .qa-item {
-  margin: 1rem 0;
-  padding: 0.75rem;
+  margin: 0.5rem 0; /* Reduced from 1rem */
+  padding: 0.5rem; /* Reduced from 0.75rem */
   background-color: rgba(74, 134, 232, 0.05);
   border-radius: 0.5rem;
 }
 
 .question {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem; /* Reduced from 0.75rem */
   font-weight: 500;
   color: #4a86e8;
 }
