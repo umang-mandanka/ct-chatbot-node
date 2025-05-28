@@ -3,16 +3,15 @@ const fetch = require('node-fetch');
 const { marked } = require('marked');
 
 // Debug: Log environment variables (do not log actual key in production)
-console.log('OPENROUTER_API_KEY exists:', !!process.env.OPENROUTER_API_KEY);
-console.log('OPENROUTER_MODEL:', process.env.OPENROUTER_MODEL);
-console.log('OPENROUTER_API_URL:', process.env.OPENROUTER_API_URL);
+console.log('GROQ_API_KEY exists:', !!process.env.GROQ_API_KEY);
+console.log('GROQ_MODEL_NAME:', process.env.GROQ_MODEL_NAME);
 
-if (!process.env.OPENROUTER_API_KEY) {
-  throw new Error('OPENROUTER_API_KEY is missing! Please set it in your .env file.');
+if (!process.env.GROQ_API_KEY) {
+  throw new Error('GROQ_API_KEY is missing! Please set it in your .env file.');
 }
 
-const MODEL_NAME = process.env.OPENROUTER_MODEL || 'mistralai/mixtral-8x7b';
-const OPENROUTER_API_URL = process.env.OPENROUTER_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
+const MODEL_NAME = process.env.GROQ_MODEL_NAME || 'llama3-70b-8192';
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 /**
  * Process a chat message and get a response from the AI
@@ -149,22 +148,20 @@ ${agency.social_links.map(link => `- ${link}`).join('\n')}
         top_p: 0.9
       };
       
-      // Log what's being sent to OpenRouter
-      console.log('\n==== SENDING TO OPENROUTER ====');
+      // Log what's being sent to GROQ
+      console.log('\n==== SENDING TO GROQ ====');
       console.log('Model:', MODEL_NAME);
       console.log('User Message:', message);
       console.log('System Prompt Length:', systemPrompt.length, 'characters');
       console.log('Temperature:', requestPayload.temperature);
       console.log('Max Tokens:', requestPayload.max_tokens);
       
-      // Make API call to OpenRouter
-      const response = await fetch(OPENROUTER_API_URL, {
+      // Make API call to GROQ
+      const response = await fetch(GROQ_API_URL, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://codetheorem.com', // Use your actual site
-          'X-Title': 'AgencyBot'
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           model: MODEL_NAME,
@@ -178,17 +175,17 @@ ${agency.social_links.map(link => `- ${link}`).join('\n')}
       });
       if (!response.ok) {
         const errorBody = await response.text();
-        console.error('OpenRouter API error:', response.status, errorBody);
+        console.error('Groq API error:', response.status, errorBody);
         return res.status(response.status).json({
-          error: 'OpenRouter API error',
+          error: 'Groq API error',
           status: response.status,
           details: errorBody
         });
       }
       const chatCompletion = await response.json();
       
-      // Log what's received from OpenRouter
-      console.log('\n==== RECEIVED FROM OPENROUTER ====');
+      // Log what's received from Groq
+      console.log('\n==== RECEIVED FROM GROQ ====');
       console.log('Response:', chatCompletion.choices?.[0]?.message?.content);
       console.log('Finish Reason:', chatCompletion.choices?.[0]?.finish_reason);
       console.log('Completion Tokens:', chatCompletion.usage?.completion_tokens);

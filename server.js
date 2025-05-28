@@ -8,12 +8,6 @@ const chatRoutes = require('./src/routes/chatRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Check for Groq API key
-if (!process.env.GROQ_API_KEY) {
-  console.log('WARNING: GROQ_API_KEY environment variable is not set!');
-  console.log('Please create a .env file with your GROQ_API_KEY to use the chatbot.');
-  console.log('Example: GROQ_API_KEY=your-api-key-here');
-}
 
 // Middleware
 app.use(cors());
