@@ -81,7 +81,7 @@ body {
 /* For smooth transition back to default size */
 .chatbox:not(.maximized) {
   width: 100%;
-  max-width: 35%;
+  max-width: 30%;
   height: 100%;
   max-height: 65%;
   bottom: 80px;
@@ -186,6 +186,7 @@ body {
   box-shadow: var(--shadow-sm);
   animation: fadeIn 0.3s ease-out;
   margin-bottom: 1.5rem;
+  white-space: pre-line; /* Preserve line breaks */
 }
 
 /* Message Title Styling */
@@ -199,6 +200,111 @@ body {
   align-items: center;
   padding-bottom: 0.25rem;
   border-bottom: 1px solid rgba(74, 134, 232, 0.2);
+}
+
+/* Section title styling for bot responses */
+.bot-message strong {
+  color: #1350ff;
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+/* Testimonial styling */
+.bot-message ul li {
+  margin-bottom: 1rem;
+}
+
+.bot-message ul li:last-child {
+  margin-bottom: 0;
+}
+
+.testimonial-item {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.testimonial-item:last-child {
+  border-bottom: none;
+}
+
+.testimonial-quote {
+  font-style: italic;
+  color: #333;
+}
+
+.testimonial-author {
+  font-weight: 600;
+  color: #1350ff;
+}
+
+/* Contact information styling */
+.phone-number,
+.email-address,
+.contact-info {
+  white-space: nowrap;
+  color: inherit;
+  font-weight: inherit;
+  display: inline-block;
+}
+
+.contact-link {
+  color: #1350ff;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
+}
+
+/* Industry items styling */
+.industry-item {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.industry-item:last-child {
+  margin-bottom: 0;
+}
+
+.industry-item span {
+  font-weight: 600;
+}
+
+/* Contact info (phone, email) - keep together and subtle */
+.contact-info {
+  white-space: nowrap;
+  color: #2356a8;
+  font-weight: 500;
+}
+
+/* Step number and title beside each other for chatbot lists */
+li.step-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+}
+.step-num {
+  font-weight: bold;
+  color: #1350ff;
+  background: #e6eefc;
+  border-radius: 50%;
+  padding: 0.15em 0.7em;
+  margin-right: 0.5em;
+  font-size: 1.1em;
+  display: inline-block;
+}
+.step-title {
+  font-weight: 600;
+  color: #1350ff;
+  font-size: 1.05em;
+  margin-right: 0.5em;
+  display: inline-block;
 }
 
 .message-title i {
@@ -227,6 +333,36 @@ body {
   font-weight: 600;
   margin-right: 0.75rem;
   min-width: 1.5rem;
+}
+
+/* Case Study Items */
+.case-study-item {
+  display: block;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.case-study-title, .numbered-title {
+  color: #1350ff;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  display: inline;
+}
+
+.case-study-description, .numbered-description {
+  color: #333;
+  display: inline;
+}
+
+/* Numbered Items */
+.numbered-item {
+  display: flex;
+  margin-bottom: 0.75rem;
+  padding: 0.25rem 0;
+}
+
+.list-number {
   background-color: rgba(74, 134, 232, 0.1);
   height: 1.5rem;
   width: 1.5rem;
@@ -284,7 +420,7 @@ body {
   border-bottom: 2px solid rgba(26, 115, 232, 0.3);
   padding-bottom: 0.25rem;
   margin-bottom: 0.75rem;
-  display: inline-block;
+  display: contents;
 }
 
 /* Section break */

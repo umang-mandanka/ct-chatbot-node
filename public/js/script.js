@@ -296,7 +296,28 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         const message = userInput.value.trim();
         
-        if (message.length === 0) return;
+        function isValidMessage(msg) {
+            if (typeof msg !== 'string') return false;
+            if (!msg.trim()) return false;
+            if (msg.length > 500) return false;
+            if (/[<>]/.test(msg)) return false;
+            return true;
+        }
+        
+        if (!isValidMessage(message)) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'flex items-start gap-2 mb-4';
+            errorDiv.innerHTML = `
+                <img src="./images/Logo-1.svg" alt="Bot" class="h-8 w-8 rounded-full ">
+                <div class="bot-message max-w-[80%]">
+                    <div>Please enter a valid message.</div>
+                    <div class="text-xs text-gray-400 mt-1">${getCurrentTime()}</div>
+                </div>
+            `;
+            chatMessages.appendChild(errorDiv);
+            scrollToBottom();
+            return;
+        }
         
         // Add user message to chat
         const msgDiv = document.createElement('div');
@@ -468,6 +489,41 @@ typingIndicator.classList.remove('flex');
         });
     }
     
+    // Post-process step list items for number+title beside each other
+    function postProcessStepLists() {
+      const chatMessages = document.getElementById('chat-messages');
+      if (!chatMessages) return;
+      // Only process <li> that are direct children of <ol>
+      chatMessages.querySelectorAll('ol > li').forEach(li => {
+        const liText = li.textContent.trim();
+        // Skip if contains phone number or email
+        if (/\+?\d[\d\s-]{7,}/.test(liText) || /[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}/.test(liText)) return;
+        // Match patterns like '1. Project Initiation' or '2. Discovery and Planning'
+        const match = liText.match(/^(\d+)\.\s+(.+)/);
+        if (match) {
+          const number = match[1];
+          const title = match[2];
+          // Only style if title is not just digits (avoid phone numbers, zip codes, etc)
+          if (!/^\d+$/.test(title.trim())) {
+            li.innerHTML = `<span class='step-num'>${number}.</span> <span class='step-title'>${title}</span>`;
+            li.classList.add('step-list-item');
+          }
+        }
+      });
+      // Wrap phone numbers and emails in .contact-info
+      chatMessages.querySelectorAll('span, div, p, li').forEach(el => {
+        if (el.children.length === 0) {
+          let html = el.innerHTML;
+          // Phone numbers
+          html = html.replace(/(\+\d{1,3}[\s-]?(\d[\s-]?){6,})/g, '<span class="contact-info">$1</span>');
+          // Emails
+          html = html.replace(/([\w.-]+@[\w.-]+\.[a-zA-Z]{2,})/g, '<span class="contact-info">$1</span>');
+          el.innerHTML = html;
+        }
+      });
+    }
+
+    
     // Format bot response with enhanced formatting
     function formatBotResponse(text) {
         // Add icons to section titles and make them main titles
@@ -499,6 +555,12 @@ typingIndicator.classList.remove('flex');
                 listIndex++;
             });
         }
+        
+        // Format numbered case studies to ensure each is on a new line with title and description separated
+        text = text.replace(/(\d+\. .+?)\n\s+(.+?)(?=(\s+\d+\.|$))/g, '<div class="case-study-item"><div class="case-study-title">$1</div><div class="case-study-description">$2</div></div>');
+        
+        // Format any remaining numbered items
+        text = text.replace(/(\d+\.) ([^\n]+)/g, '<div class="numbered-item"><span class="list-number">$1</span> $2</div>');
         
         // Add line breaks after titles
         text = text.replace(/<\/h3>/g, '</h3><div class="title-separator"></div>');

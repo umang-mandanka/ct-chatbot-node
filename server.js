@@ -20,6 +20,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Create a simple session store for the application
+// This will be used to track used questions per user session
+global.sessionStore = new Map();
+
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
 

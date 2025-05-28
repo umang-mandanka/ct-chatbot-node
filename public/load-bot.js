@@ -32,7 +32,7 @@
       iframe.style.transition = 'none';
 
       // Debug: log received event
-      console.log('[Chatbot Iframe] Received resize event:', event.data);
+      // console.log('[Chatbot Iframe] Received resize event:', event.data);
       requestAnimationFrame(() => {
         let targetWidth, targetHeight, targetRadius, targetZ;
         if (event.data.state === 'maximized' || event.data.state === 'open') {
@@ -54,13 +54,13 @@
         if (targetWidth !== '0px' && targetHeight !== '0px') {
           // Force reflow before changing size
           void iframe.offsetWidth;
-          console.log('[Chatbot Iframe] Before resize:', {
-            width: iframe.style.width,
-            height: iframe.style.height,
-            bottom: iframe.style.bottom,
-            right: iframe.style.right,
-            state: event.data.state
-          });
+          // console.log('[Chatbot Iframe] Before resize:', {
+          //   width: iframe.style.width,
+          //   height: iframe.style.height,
+          //   bottom: iframe.style.bottom,
+          //   right: iframe.style.right,
+          //   state: event.data.state
+          // });
           iframe.style.width = targetWidth;
           iframe.style.height = targetHeight;
           iframe.style.borderRadius = targetRadius;
@@ -69,13 +69,13 @@
           iframe.style.right = targetRight;
           // Log after a short delay to catch the new value
           setTimeout(() => {
-            console.log('[Chatbot Iframe] After resize:', {
-              width: iframe.style.width,
-              height: iframe.style.height,
-              bottom: iframe.style.bottom,
-              right: iframe.style.right,
-              state: event.data.state
-            });
+            // console.log('[Chatbot Iframe] After resize:', {
+            //   width: iframe.style.width,
+            //   height: iframe.style.height,
+            //   bottom: iframe.style.bottom,
+            //   right: iframe.style.right,
+            //   state: event.data.state
+            // });
           }, 50);
         }
       });
