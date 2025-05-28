@@ -84,8 +84,6 @@ You are the official, friendly, and professional chatbot for **${agency.name}**.
 
 **👥 Team & Contact**
 - **Team Roles:** ${agency.team_roles.join(', ')}
-- **Leadership:** 
-  - ${companyProfile.leadership.map(leader => `${leader.name} (${leader.role})`).join('\n  - ')}
 - **Work Email:** ${agency.contact.work_inquiries.email}
 - **Work Phone:** ${agency.contact.work_inquiries.phone}
 - **Career Email:** ${agency.contact.career_inquiries.email}
@@ -437,8 +435,7 @@ function enhanceResponseStyling(htmlResponse) {
     // Format industry terms
     .replace(/SaaS|Healthcare|EdTech|E-commerce|Enterprise|Fintech/g, '<span class="highlight-project">$&</span>')
     
-    // Format team member names with roles
-    .replace(/Rajdip Khavad\s*\(.*?\)|Vraj Trivedi\s*\(.*?\)|Prem Parmar\s*\(.*?\)/g, '<span class="highlight-person">$&</span>')
+    // Format team member names
     .replace(/Rajdip Khavad|Vraj Trivedi|Prem Parmar/g, '<span class="highlight-person">$&</span>')
     
     // Add spacing after titles

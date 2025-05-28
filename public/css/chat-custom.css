@@ -194,8 +194,8 @@ body {
   color: #4a86e8;
   font-size: 1.1rem;
   font-weight: 600;
-   /* margin-top: 0.5rem;
-  margin-bottom: 0.25rem;  */
+  margin-top: 0.5rem; /* Reduced from 0.75rem */
+  margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
   padding-bottom: 0.25rem;

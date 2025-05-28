@@ -543,16 +543,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to format bot responses with HTML formatting
     function formatBotResponse(text) {
         try {
+            // Basic safety check
             if (!text || typeof text !== 'string') {
                 console.error('Invalid text passed to formatBotResponse:', text);
                 return 'Sorry, I encountered an error processing this response.';
             }
     
-            // Normalize line breaks
-            text = text.replace(/\r\n|\r/g, '\n');
-    
-            // Split text into paragraphs by double newlines
-            text = text.split(/\n{2,}/g).map(para => `<p>${para.trim()}</p>`).join('');
+            // Replace line breaks with <br> tags
+            text = text.replace(/\n/g, '<br>');
     
             // Format section titles with icons
             const sectionTitles = {
@@ -565,54 +563,94 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Process:': '<i class="fas fa-tasks"></i> Process',
                 'Benefits:': '<i class="fas fa-award"></i> Benefits'
             };
+    
+            // Apply section title formatting
             Object.keys(sectionTitles).forEach(title => {
-                text = text.replace(new RegExp(title, 'g'), `<h3 class="message-title">${sectionTitles[title]}</h3>`);
+                const regex = new RegExp(title, 'g');
+                text = text.replace(regex, `<h3 class="message-title">${sectionTitles[title]}</h3>`);
             });
     
-            // Headings
-            text = text.replace(/(?:<p>)?\s*(#{2,3})\s*(.+?)(<\/p>)?/g, (_, hashes, content) => {
+            // Format markdown headings (##, ###)
+            text = text.replace(/(?:<br>|^)\s*(#{2,3})\s+(.+?)(?=<br>|$)/g, function(match, hashes, content) {
                 const level = hashes.length;
                 return `<h${level} class="message-title">${content.trim()}</h${level}>`;
             });
     
-            // Bold and italic
+            // Format bold text (markdown style)
             text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Format italic text (markdown style)
             text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
     
-            // Bullet lists
-            text = text.replace(/<p>([-*] .+?)(?:<\/p>)/gs, match => {
-                const items = match.match(/[-*] .+/g);
-                if (!items) return match;
-                return `<ul class="bot-list">${items.map(i => `<li class="bot-list-item">${i.slice(2)}</li>`).join('')}</ul>`;
+            // Format bullet points
+            const bulletListPattern = /((?:^|<br>)\s*[-*]\s+.*(?:<br>\s*[-*]\s+.*)*)/g;
+            text = text.replace(bulletListPattern, function(match) {
+                // Split the list into individual items
+                const items = match.split(/<br>\s*[-*]\s+/);
+                // Remove empty items and trim each item
+                const filteredItems = items.filter(item => item.trim()).map(item => item.trim());
+                // Convert to HTML list
+                if (filteredItems.length > 0) {
+                    return '<ul class="bot-list">' + 
+                        filteredItems.map(item => `<li class="bot-list-item">${item}</li>`).join('') + 
+                        '</ul>';
+                }
+                return match; // Return original if no valid items
             });
     
-            // Numbered lists
-            text = text.replace(/<p>((\d+\. .+)(<br>)?)+<\/p>/gs, match => {
-                const items = match.match(/\d+\. .+/g);
-                if (!items) return match;
-                return `<ol class="bot-list">${items.map(i => `<li class="bot-list-item">${i.replace(/^\d+\.\s/, '')}</li>`).join('')}</ol>`;
+            // Format numbered lists (lines starting with 1., 2., etc.)
+            const numberedListPattern = /((?:^|<br>)\s*\d+\.\s+.*(?:<br>\s*\d+\.\s+.*)*)/g;
+            text = text.replace(numberedListPattern, function(match) {
+                // Split the list into individual items
+                const items = match.split(/<br>\s*\d+\.\s+/);
+                // Remove empty items and trim each item
+                const filteredItems = items.filter(item => item.trim()).map(item => item.trim());
+                // Convert to HTML list
+                if (filteredItems.length > 0) {
+                    return '<ol class="bot-list">' + 
+                        filteredItems.map(item => `<li class="bot-list-item">${item}</li>`).join('') + 
+                        '</ol>';
+                }
+                return match; // Return original if no valid items
             });
+            
+            // Format phone numbers with special styling
+            const phonePattern = /(\+?\d{1,3}[-.\\s]?)?\(?\d{3}\)?[-.\\s]?\d{3}[-.\\s]?\d{4}/g;
+            text = text.replace(phonePattern, '<span class="phone-number">$&</span>');
     
-            // Phone & email
-            text = text.replace(/(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g, '<span class="phone-number">$&</span>');
-            text = text.replace(/[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}/g, '<a href="mailto:$&" class="email-link">$&</a>');
-    
-            // Highlight names
+            // Format email addresses
+            const emailPattern = /[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}/g;
+            text = text.replace(emailPattern, '<a href="mailto:$&" class="email-link">$&</a>');
+            
+            // Reduce extra spacing between paragraphs
+            text = text.replace(/<br><br><br>/g, '<br><br>');
+            text = text.replace(/<\/p><br><br>/g, '</p><br>');
+            
+            // Add special styling for Rajdip Khavad mentions
             text = text.replace(/Rajdip Khavad/g, '<strong class="team-lead">Rajdip Khavad</strong>');
+    
+            // Format phone numbers to prevent breaking
+            text = text.replace(/(\+\d{1,3}[\s-]?\d{3,}[\s-]?\d{3,}[\s-]?\d{3,})/g, '<span class="contact-info">$1</span>');
+            text = text.replace(/(\d{3,}[\s-]?\d{3,}[\s-]?\d{4,})/g, '<span class="contact-info">$1</span>');
+            
+            // Format any remaining numbered items that weren't part of a list
+            text = text.replace(/<br>(\d+)\. ([^<]+)(?!<\/li>)/g, '<div class="numbered-item"><span class="list-number">$1.</span> <span class="numbered-content">$2</span></div>');
+            
+            // Add line breaks after titles
+            text = text.replace(/<\/h3>/g, '</h3><div class="title-separator"></div>');
+            
+            // Format Q&A style content with better spacing
+            text = text.replace(/Q: (.+)<br>A: (.+)/g, '<div class="qa-item"><div class="question"><strong>Q:</strong> $1</div><div class="answer"><strong>A:</strong> $2</div></div>');
+            
+            // Highlight company name
             text = text.replace(/Code Theorem/g, '<span class="highlight">Code Theorem</span>');
-    
-            // Q&A formatting
-            text = text.replace(/Q:\s*(.*?)\s*A:\s*(.*?)(<br>|<\/p>)/gs, (_, q, a) => {
-                return `<div class="qa-item"><div class="question"><strong>Q:</strong> ${q}</div><div class="answer"><strong>A:</strong> ${a}</div></div>`;
-            });
-    
+            
             return text;
         } catch (error) {
             console.error('Error in formatBotResponse:', error);
-            return text;
+            return text; // Return original text if there's an error
         }
     }
-    
     
     // Get current time in HH:MM format
     function getCurrentTime() {
