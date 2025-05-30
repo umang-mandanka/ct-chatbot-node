@@ -71,6 +71,23 @@ You are the official, friendly, and professional chatbot for **${agency.name}**.
 - Mentioning anything not clearly defined below
 
 ---
+- Feel free to use your own formatting style while keeping responses professional
+- Use appropriate styling with emojis, bold text, and other markdown features
+- Apply theme colors and visual elements to make responses engaging
+- Structure information in a visually appealing way
+---
+
+**📦 RESPONSE STRUCTURE & STYLE**
+- Feel free to use creative formatting and styling
+- Use vibrant theme colors and visual elements in your responses
+- Apply emojis liberally to make responses engaging and lively (🚀, ✅, 💡, 🎨, 💻, etc.)
+- Create visually structured content with varied formatting
+- Use bold, italics, and other markdown features for emphasis
+- Organize information in an aesthetically pleasing way
+- Highlight key terms like service names, team members, and industry terms
+- Make responses visually appealing with clear sections
+- Use creative headers and dividers
+- Feel free to experiment with different formatting styles
 
 **🏢 Agency Overview**
 - **About Us:** ${agency.description}
@@ -112,19 +129,7 @@ ${services.map(s => `- **${s.category}**: ${s.description}
 **🔗 Social Links**
 ${agency.social_links.map(link => `- ${link}`).join('\n')}
 
----
 
-**📦 RESPONSE STRUCTURE & STYLE**
-- Always answer using **only** the verified content above
-- Keep answers **between 40 and 120 words** unless longer explanation is needed
-- Use **bold section headers** and **concise points**
-- Format important information with markdown (## for headers, * for lists, **bold** for emphasis)
-- Use emojis sparingly to make responses more engaging (🚀, ✅, 💡, etc.)
-- Structure complex answers with clear sections and numbered lists
-- Highlight key terms like service names, team members, and industry terms
-- Never summarize by saying "that's all" or "no more info"
-- If a topic isn't listed, respond ONLY with:  
-  "I don't have the details on [insert topic] handy right now, but I'd be happy to connect you with our team for more info!"
 `;
 
 
@@ -136,16 +141,17 @@ ${agency.social_links.map(link => `- ${link}`).join('\n')}
         messages: [
           {
             role: 'system',
-            content: `You are the official chatbot of CodeTheorem. Speak as "we". Respond using markdown. Do not guess or use forbidden phrases.`
+            content: `You are the official chatbot of CodeTheorem. Speak as "we". Respond using creative markdown formatting with theme colors. Use emojis, bold text, and visually appealing structures.
+`
           },
           {
             role: 'user',
             content: message
           }
         ],
-        temperature: 0.3,
+        temperature: 0.7,  // Increased for more creative responses
         max_tokens: 1024,
-        top_p: 0.9
+        top_p: 0.95       // Slightly increased for more varied outputs
       };
       
       // Log what's being sent to GROQ
@@ -169,8 +175,9 @@ ${agency.social_links.map(link => `- ${link}`).join('\n')}
             { role: 'system', content: systemPrompt },
             { role: 'user', content: message }
           ],
-          temperature: 0.3,
-          max_tokens: 1024
+          temperature: 0.7,  // Increased for more creative responses
+          max_tokens: 1024,
+          top_p: 0.95       // Slightly increased for more varied outputs
         })
       });
       if (!response.ok) {
@@ -198,8 +205,8 @@ ${agency.social_links.map(link => `- ${link}`).join('\n')}
       // Use marked to convert markdown to HTML and sanitize output
       aiResponse = marked.parse(aiResponse, { mangle: false, headerIds: false });
       
-      // Apply additional styling to enhance the response appearance
-      aiResponse = enhanceResponseStyling(aiResponse);
+      // Do NOT apply additional styling to enhance the response appearance
+      // aiResponse = enhanceResponseStyling(aiResponse);
 
       // Simple flat list of all possible follow-up questions
       const allPossibleQuestions = [

@@ -425,26 +425,26 @@ document.addEventListener('DOMContentLoaded', function() {
             // Format and add bot response to chat
             const botResponseDiv = document.createElement('div');
             botResponseDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
-            
+
             const botAvatar = document.createElement('img');
             botAvatar.src = './images/Logo-1.png';
             botAvatar.alt = 'Bot';
             botAvatar.className = 'h-8 w-8 rounded-full';
-            
+
+            // Fix: define messageContainer and children
             const messageContainer = document.createElement('div');
             messageContainer.className = 'bot-message max-w-[80%]';
-            
+
             const messageContent = document.createElement('div');
-            // Format the response with HTML
-            messageContent.innerHTML = formatBotResponse(data.response);
-            
+            messageContent.innerHTML = data.response;
+
             const timestamp = document.createElement('div');
             timestamp.className = 'text-xs text-gray-400 mt-1';
             timestamp.textContent = getCurrentTime();
-            
+
             messageContainer.appendChild(messageContent);
             messageContainer.appendChild(timestamp);
-            
+
             botResponseDiv.appendChild(botAvatar);
             botResponseDiv.appendChild(messageContainer);
             chatMessages.appendChild(botResponseDiv);
