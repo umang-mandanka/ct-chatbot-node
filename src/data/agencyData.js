@@ -377,7 +377,8 @@ const companyProfile = {
     {
       "name": "Rajdip Khavad",
       "role": "Team Leader (Developing Team Lead), Chief of Development"
-    }
+    },
+    
   ],
   "technology_stack": {
     "mobile_development": [

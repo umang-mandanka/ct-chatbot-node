@@ -33,33 +33,110 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add welcome message on page load
     addWelcomeMessage();
     
+    // Function to create a logo avatar with the new branding
+    function createLogoAvatar() {
+        const botAvatar = document.createElement('div');
+        botAvatar.style.width = '32px';
+        botAvatar.style.height = '32px';
+        botAvatar.style.borderRadius = '40px';
+        botAvatar.style.borderWidth = '1px';
+        botAvatar.style.borderStyle = 'solid';
+        botAvatar.style.borderColor = 'rgba(255,255,255,0.2)';
+        botAvatar.style.display = 'flex';
+        botAvatar.style.alignItems = 'center';
+        botAvatar.style.justifyContent = 'center';
+        botAvatar.style.background = 'linear-gradient(90deg, #1350FF 0%, #D900FF 100%)';
+        
+        // Add SVG logo inside the div
+        botAvatar.innerHTML = `
+            <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_216_6931)">
+                    <g clip-path="url(#clip1_216_6931)">
+                        <path d="M16.3486 13.7776L18.0254 15.9953C18.5869 16.7345 18.0614 17.7802 17.1377 17.7805H3.20606C2.28223 17.7804 1.7568 16.7165 2.31837 15.9953L4.0088 13.7776H16.3486ZM11.0869 6.81857L16.3584 13.7776H16.3486L11.0869 6.81857ZM10.1983 6.37228C9.86789 6.37449 9.53628 6.52339 9.31153 6.81857L4.0088 13.7776H3.98536L9.31153 6.81857C9.53025 6.51934 9.86336 6.37046 10.1983 6.37228ZM10.1983 6.37228C10.5337 6.37003 10.8679 6.51885 11.0869 6.81857C10.8619 6.52289 10.5291 6.37408 10.1983 6.37228Z" fill="white"/>
+                        <path d="M8.89528 0.779515C9.47499 0.022266 10.6164 0.022266 11.1961 0.779515L19.8006 12.174C20.2897 12.8411 19.8185 13.7785 18.9851 13.7785H16.3591L11.0867 6.81858C10.6338 6.22372 9.74605 6.22364 9.3113 6.81858L3.98513 13.7785H1.01442C0.181116 13.7785 -0.28969 12.8231 0.217547 12.174L8.89528 0.779515Z" fill="white"/>
+                    </g>
+                </g>
+                <defs>
+                    <clipPath id="clip0_216_6931">
+                        <rect width="20" height="17.561" fill="white" transform="translate(0 0.219513)"/>
+                    </clipPath>
+                    <clipPath id="clip1_216_6931">
+                        <rect width="20" height="17.561" fill="white" transform="translate(0 0.219757)"/>
+                    </clipPath>
+                </defs>
+            </svg>
+        `;
+        return botAvatar;
+    }
+
+    // Function to create schedule call button
+    function createScheduleCallButton() {
+        const scheduleButton = document.createElement('div');
+        scheduleButton.className = 'schedule-call-button';
+        
+        // Create SVG icon
+        const svgIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svgIcon.setAttribute('width', '20');
+        svgIcon.setAttribute('height', '21');
+        svgIcon.setAttribute('viewBox', '0 0 20 21');
+        svgIcon.setAttribute('fill', 'none');
+        svgIcon.innerHTML = `
+            <path d="M9.79521 4.3869C9.86554 4.19672 10.1345 4.19672 10.2049 4.3869C10.99 6.50867 11.3826 7.56955 12.1565 8.34346C12.9304 9.11733 13.9913 9.50992 16.113 10.2951C16.3032 10.3654 16.3032 10.6344 16.113 10.7048C13.9913 11.4899 12.9304 11.8825 12.1565 12.6564C11.3826 13.4303 10.99 14.4912 10.2049 16.6129C10.1345 16.8031 9.86554 16.8031 9.79521 16.6129C9.01004 14.4912 8.61746 13.4303 7.84358 12.6564C7.06967 11.8825 6.00879 11.4899 3.88702 10.7048C3.69684 10.6344 3.69684 10.3654 3.88702 10.2951C6.00879 9.50992 7.06967 9.11733 7.84358 8.34346C8.61746 7.56955 9.01004 6.50867 9.79521 4.3869Z" fill="url(#paint0_linear_192_17536)"/>
+            <path d="M4.97481 5.47469C5.21889 5.23061 5.61462 5.23061 5.8587 5.47468L6.9065 6.52248C7.15058 6.76656 7.15058 7.16228 6.9065 7.40636C6.66243 7.65044 6.2667 7.65044 6.02262 7.40636L4.97482 6.35857C4.73074 6.11449 4.73074 5.71876 4.97481 5.47469ZM13.0937 13.5935C13.3378 13.3495 13.7335 13.3495 13.9776 13.5935L15.0253 14.6414C15.2694 14.8855 15.2694 15.2811 15.0253 15.5252C14.7813 15.7693 14.3856 15.7693 14.1415 15.5252L13.0937 14.4775C12.8496 14.2334 12.8496 13.8376 13.0937 13.5935ZM15.0253 5.47469C15.2694 5.71877 15.2694 6.1145 15.0253 6.35857L13.9776 7.40638C13.7335 7.65046 13.3378 7.65046 13.0937 7.40638C12.8496 7.16231 12.8496 6.76658 13.0937 6.5225L14.1415 5.4747C14.3856 5.23061 14.7813 5.23061 15.0253 5.47469ZM6.9065 13.5935C7.15058 13.8376 7.15057 14.2334 6.9065 14.4775L5.85869 15.5252C5.6146 15.7693 5.21888 15.7693 4.9748 15.5252C4.73073 15.2811 4.73073 14.8855 4.97481 14.6414L6.02262 13.5935C6.2667 13.3495 6.66243 13.3495 6.9065 13.5935Z" fill="url(#paint1_linear_192_17536)"/>
+            <defs>
+            <linearGradient id="paint0_linear_192_17536" x1="3.74438" y1="10.4999" x2="16.2557" y2="10.4999" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#1350FF"/>
+            <stop offset="1" stop-color="#D900FF"/>
+            </linearGradient>
+            <linearGradient id="paint1_linear_192_17536" x1="4.79175" y1="10.5" x2="15.2084" y2="10.5" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#1350FF"/>
+            <stop offset="1" stop-color="#D900FF"/>
+            </linearGradient>
+            </defs>
+        `;
+        
+        // Create text span
+        const textSpan = document.createElement('span');
+        textSpan.textContent = 'Schedule a quick call with our team';
+        
+        // Add SVG and text to button
+        scheduleButton.appendChild(svgIcon);
+        scheduleButton.appendChild(textSpan);
+        
+        // Add click event listener
+        scheduleButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Open a new tab or window with a scheduling page
+            window.open('https://calendly.com/your-team-scheduling-link', '_blank');
+        });
+        
+        return scheduleButton;
+    }
+
     // Function to add welcome message and default suggested questions (chips)
     function addWelcomeMessage() {
-        // Add welcome message
-        const welcomeDiv = document.createElement('div');
-        welcomeDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
+        const welcomeMessageDiv = document.createElement('div');
+        welcomeMessageDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
         
-        const botAvatar = document.createElement('img');
-        botAvatar.src = './images/Logo-1.png';
-        botAvatar.alt = 'Bot';
-        botAvatar.className = 'h-8 w-8 rounded-full bg-[#1350ff]';
+        // Use the createLogoAvatar function
+        const botAvatar = createLogoAvatar();
         
         const messageContainer = document.createElement('div');
-        messageContainer.className = 'bot-message max-w-[80%]';
+        messageContainer.className = 'bot-message';
         
         const messageContent = document.createElement('div');
-        messageContent.innerHTML = 'Welcome to <span class="highlight">Code Theorem</span>! How can I assist you today?';
-        
-        const timestamp = document.createElement('div');
-        timestamp.className = 'text-xs text-gray-400 mt-1';
-        timestamp.textContent = getCurrentTime();
+        messageContent.innerHTML = 'Hello! How can I assist you today?';
+        messageContent.style.width = '100%'; // Ensure content takes full width in flexbox
         
         messageContainer.appendChild(messageContent);
-        messageContainer.appendChild(timestamp);
         
-        welcomeDiv.appendChild(botAvatar);
-        welcomeDiv.appendChild(messageContainer);
-        chatMessages.appendChild(welcomeDiv);
+        welcomeMessageDiv.appendChild(botAvatar);
+        welcomeMessageDiv.appendChild(messageContainer);
+        chatMessages.appendChild(welcomeMessageDiv);
+        
+        // Add suggested questions and schedule call button after welcome message
+        renderQuestionChips([]);
 
         // Add default suggested questions only if not present
         renderQuestionChips([
@@ -75,36 +152,110 @@ document.addEventListener('DOMContentLoaded', function() {
         return text.substring(0, maxLength) + '...';
     }
 
-    // Function to render question chips (removes any previous chips)
+    // Function to render question chips
     function renderQuestionChips(chipsArray) {
-        // Remove any existing chips
-        const existingChips = chatMessages.querySelector('.suggested-questions');
-        if (existingChips) {
-            existingChips.remove();
+        // Remove any existing chips and containers
+        const existingChipsContainers = chatMessages.querySelectorAll('.suggested-questions-container');
+        existingChipsContainers.forEach(container => {
+            container.remove();
+        });
+        
+        // Find the last bot message div (the parent container of the bot-message)
+        const botMessageDivs = chatMessages.querySelectorAll('.flex.items-start.gap-2.mb-4.animate-fade-in');
+        const lastBotMessageDiv = botMessageDivs[botMessageDivs.length - 1];
+        
+        if (!lastBotMessageDiv) {
+            return; // No bot message to append to
         }
-        // Don't render if no questions
-        if (!chipsArray || !chipsArray.length) {
-            return;
-        }
+        
         // Create container for suggested questions
         const suggestedQuestionsDiv = document.createElement('div');
-        // Align chips to the left and allow multiple
-        suggestedQuestionsDiv.className = 'suggested-questions flex justify-start my-4';
-        // Show up to 3 chips
-        const chipsToShow = chipsArray.slice(0, 3);
-        chipsToShow.forEach((question) => {
-            const chip = document.createElement('div');
-            chip.className = 'chip';
-            chip.textContent = truncateText(question);
-            chip.addEventListener('click', function() {
-                // Set the input value to the full question
-                userInput.value = question;
-                // Trigger the form submission
-                chatForm.dispatchEvent(new Event('submit'));
+        // Align chips in a column with gap
+        suggestedQuestionsDiv.className = 'suggested-questions';
+        
+        // Create a new div to contain the suggested questions
+        const suggestedQuestionsContainer = document.createElement('div');
+        suggestedQuestionsContainer.className = 'flex items-start gap-2 mt-0 animate-fade-in suggested-questions-container';
+        
+        // Add the same left margin as the bot message to align with it
+        suggestedQuestionsContainer.style.marginLeft = '40px'; // Adjust this value based on your layout
+        
+        // Show up to 3 chips if we have suggested questions
+        if (chipsArray && chipsArray.length) {
+            const chipsToShow = chipsArray.slice(0, 3);
+            chipsToShow.forEach((question) => {
+                const chip = document.createElement('div');
+                chip.className = 'chip';
+                
+                // Create SVG icon
+                const svgIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svgIcon.setAttribute('width', '20');
+                svgIcon.setAttribute('height', '21');
+                svgIcon.setAttribute('viewBox', '0 0 20 21');
+                svgIcon.setAttribute('fill', 'none');
+                svgIcon.style.marginRight = '8px';
+                svgIcon.innerHTML = `
+                    <path d="M9.79521 4.3869C9.86554 4.19672 10.1345 4.19672 10.2049 4.3869C10.99 6.50867 11.3826 7.56955 12.1565 8.34346C12.9304 9.11733 13.9913 9.50992 16.113 10.2951C16.3032 10.3654 16.3032 10.6344 16.113 10.7048C13.9913 11.4899 12.9304 11.8825 12.1565 12.6564C11.3826 13.4303 10.99 14.4912 10.2049 16.6129C10.1345 16.8031 9.86554 16.8031 9.79521 16.6129C9.01004 14.4912 8.61746 13.4303 7.84358 12.6564C7.06967 11.8825 6.00879 11.4899 3.88702 10.7048C3.69684 10.6344 3.69684 10.3654 3.88702 10.2951C6.00879 9.50992 7.06967 9.11733 7.84358 8.34346C8.61746 7.56955 9.01004 6.50867 9.79521 4.3869Z" fill="url(#paint0_linear_225_6790)"/>
+                    <path d="M4.97469 5.47469C5.21877 5.23061 5.6145 5.23061 5.85857 5.47468L6.90638 6.52248C7.15046 6.76656 7.15046 7.16228 6.90638 7.40636C6.66231 7.65044 6.26658 7.65044 6.0225 7.40636L4.9747 6.35857C4.73061 6.11449 4.73061 5.71876 4.97469 5.47469ZM13.0935 13.5935C13.3376 13.3495 13.7334 13.3495 13.9775 13.5935L15.0252 14.6414C15.2693 14.8855 15.2693 15.2811 15.0252 15.5252C14.7811 15.7693 14.3855 15.7693 14.1414 15.5252L13.0935 14.4775C12.8495 14.2334 12.8495 13.8376 13.0935 13.5935ZM15.0252 5.47469C15.2693 5.71877 15.2693 6.1145 15.0252 6.35857L13.9775 7.40638C13.7334 7.65046 13.3376 7.65046 13.0935 7.40638C12.8495 7.16231 12.8495 6.76658 13.0935 6.5225L14.1414 5.4747C14.3855 5.23061 14.7811 5.23061 15.0252 5.47469ZM6.90638 13.5935C7.15046 13.8376 7.15045 14.2334 6.90637 14.4775L5.85856 15.5252C5.61448 15.7693 5.21876 15.7693 4.97468 15.5252C4.73061 15.2811 4.73061 14.8855 4.97469 14.6414L6.0225 13.5935C6.26657 13.3495 6.66231 13.3495 6.90638 13.5935Z" fill="url(#paint1_linear_225_6790)"/>
+                    <defs>
+                        <linearGradient id="paint0_linear_225_6790" x1="3.74438" y1="10.4999" x2="16.2557" y2="10.4999" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#1350FF"/>
+                            <stop offset="1" stop-color="#D900FF"/>
+                        </linearGradient>
+                        <linearGradient id="paint1_linear_225_6790" x1="4.79163" y1="10.5" x2="15.2083" y2="10.5" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#1350FF"/>
+                            <stop offset="1" stop-color="#D900FF"/>
+                        </linearGradient>
+                    </defs>
+                `;
+                
+                // Create text span
+                const textSpan = document.createElement('span');
+                textSpan.textContent = truncateText(question);
+                
+                // Add SVG and text to chip
+                chip.appendChild(svgIcon);
+                chip.appendChild(textSpan);
+                
+                chip.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Get the chatbar input element
+                    const chatbarInput = document.getElementById('chatbar-input');
+                    if (chatbarInput) {
+                        // Set the input value to the full question
+                        chatbarInput.value = question;
+                        // Expand the chat input if it's not already expanded
+                        const chatInputBar = document.getElementById('chat-input-bar');
+                        if (chatInputBar) {
+                            chatInputBar.classList.add('expanded');
+                        }
+                        // Find the chat form
+                        const chatbarForm = document.getElementById('chatbar-form');
+                        if (chatbarForm) {
+                            // Trigger the form submission
+                            chatbarForm.dispatchEvent(new Event('submit'));
+                        } else {
+                            // Fallback to the original form if available
+                            if (chatForm) {
+                                chatForm.dispatchEvent(new Event('submit'));
+                            }
+                        }
+                    }
+                });
+                suggestedQuestionsDiv.appendChild(chip);
             });
-            suggestedQuestionsDiv.appendChild(chip);
-        });
-        chatMessages.appendChild(suggestedQuestionsDiv);
+        }
+        
+        // Create and add schedule call button
+        const scheduleButton = createScheduleCallButton();
+        suggestedQuestionsDiv.appendChild(scheduleButton);
+        
+        // Append the suggested questions to the container
+        suggestedQuestionsContainer.appendChild(suggestedQuestionsDiv);
+        
+        // Insert the container after the last bot message div
+        chatMessages.insertBefore(suggestedQuestionsContainer, lastBotMessageDiv.nextSibling);
     }
     
     // Initialize chat container and visibility state - using global state variables
@@ -133,41 +284,10 @@ document.addEventListener('DOMContentLoaded', function() {
         resizeIframeState('closed');
     }
     
-    // Toggle chat visibility
+    // Toggle chat visibility - disabled as we now use the input bar to control chat visibility
+    // Our new chat-input-handler.js handles this functionality
     if (chatToggle && chatbox) {
-        chatToggle.addEventListener('click', () => {
-            // If maximized, return to normal state first
-            if (isMaximized) {
-                // Add transitioning class to prevent flickering
-                chatbox.classList.add('transitioning');
-                
-                // Remove maximized classes
-                chatbox.classList.remove('maximized');
-                chatbox.classList.add('normal');
-                
-                // Update button icon
-                maximizeChat.innerHTML = '<i class="fas fa-expand-alt"></i>';
-                
-                // Update state
-                isMaximized = false;
-                
-                // Remove transitioning class after animation completes
-                setTimeout(() => {
-                    chatbox.classList.remove('transitioning');
-                }, 400); // Match CSS transition duration
-            }
-            
-            if (!isChatVisible) {
-                openChat();
-                // Animate the FAB
-                fab.classList.add('rotate-in');
-                setTimeout(() => {
-                    fab.classList.remove('rotate-in');
-                }, 500);
-            } else {
-                closeChatWindow();
-            }
-        });
+        chatToggle.style.display = 'none'; // Hide the old toggle button
     }
     
     // Close chat button event
@@ -177,46 +297,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Maximize chat
+    // Maximize chat functionality disabled
+    // We're using a new UI approach with fixed dimensions
     if (maximizeChat && chatbox) {
-        maximizeChat.addEventListener('click', () => {
-            // Add transitioning class to prevent flickering
-            chatbox.classList.add('transitioning');
-            
-            if (!isMaximized) {
-                // Add maximized classes
-                chatbox.classList.remove('normal');
-                chatbox.classList.add('maximized');
-                
-                // Update button icon
-                maximizeChat.innerHTML = '<i class="fas fa-compress-alt"></i>';
-                
-                // Update state
-                isMaximized = true;
-                
-                // Update iframe size
-                resizeIframeState('maximized');
-            } else {
-                // Remove maximized classes
-                chatbox.classList.remove('maximized');
-                chatbox.classList.add('normal');
-                
-                // Update button icon
-                maximizeChat.innerHTML = '<i class="fas fa-expand-alt"></i>';
-                
-                // Update state
-                isMaximized = false;
-                
-                // Update iframe size
-                resizeIframeState('open');
-            }
-            
-            // Remove transitioning class after animation completes
-            setTimeout(() => {
-                chatbox.classList.remove('transitioning');
-                if (userInput) userInput.focus();
-            }, 400); // Match CSS transition duration
-        });
+        // Remove the maximize button or disable its functionality
+        maximizeChat.style.display = 'none';
     }
       
     
@@ -302,22 +387,20 @@ document.addEventListener('DOMContentLoaded', function() {
             existingChips.remove();
         }
         
-        // Add user message to chat
+        // Add user message to chat - styled like bot message but without avatar
         const userMessageDiv = document.createElement('div');
         userMessageDiv.className = 'flex justify-end mb-4 animate-fade-in';
+      
+
         
         const messageContainer = document.createElement('div');
-        messageContainer.className = 'user-message max-w-[80%]';
+        messageContainer.className = 'user-message'; // Keep the class name
         
         const messageContent = document.createElement('div');
         messageContent.textContent = message;
-        
-        const timestamp = document.createElement('div');
-        timestamp.className = 'text-xs text-gray-400 mt-1 text-right';
-        timestamp.textContent = getCurrentTime();
+        messageContent.style.width = '100%'; // Ensure content takes full width in flexbox
         
         messageContainer.appendChild(messageContent);
-        messageContainer.appendChild(timestamp);
         
         userMessageDiv.appendChild(messageContainer);
         chatMessages.appendChild(userMessageDiv);
@@ -329,8 +412,8 @@ document.addEventListener('DOMContentLoaded', function() {
         sendMessageToServer(message);
     }
     
-    // Function to send message to server
-    async function sendMessageToServer(message) {
+    // Function to send message to server - making it globally available
+    window.sendMessageToServer = async function(message) {
         try {
             // Show typing indicator
             typingIndicator.classList.remove('hidden');
@@ -395,27 +478,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
                 
-                const botAvatar = document.createElement('img');
-                botAvatar.src = './images/Logo-1.png';
-                botAvatar.alt = 'Bot';
-                botAvatar.className = 'h-8 w-8 rounded-full';
+                // Use the createLogoAvatar function
+                const botAvatar = createLogoAvatar();
                 
                 const messageContainer = document.createElement('div');
-                messageContainer.className = 'bot-message error max-w-[80%]';
+                messageContainer.className = 'bot-message error';
                 
                 const messageContent = document.createElement('div');
                 messageContent.innerHTML = 'Sorry, I encountered an error processing your request. Please try again later.';
-                
-                const timestamp = document.createElement('div');
-                timestamp.className = 'text-xs text-gray-400 mt-1';
-                timestamp.textContent = getCurrentTime();
+                messageContent.style.width = '100%'; // Ensure content takes full width in flexbox
                 
                 messageContainer.appendChild(messageContent);
-                messageContainer.appendChild(timestamp);
                 
                 errorDiv.appendChild(botAvatar);
                 errorDiv.appendChild(messageContainer);
                 chatMessages.appendChild(errorDiv);
+                
+                // Render schedule call button without suggested questions
+                renderQuestionChips([]);
                 
                 // Scroll to bottom
                 scrollToBottom();
@@ -426,32 +506,29 @@ document.addEventListener('DOMContentLoaded', function() {
             const botResponseDiv = document.createElement('div');
             botResponseDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
 
-            const botAvatar = document.createElement('img');
-            botAvatar.src = './images/Logo-1.png';
-            botAvatar.alt = 'Bot';
-            botAvatar.className = 'h-8 w-8 rounded-full';
+            // Use the createLogoAvatar function
+            const botAvatar = createLogoAvatar();
 
             // Fix: define messageContainer and children
             const messageContainer = document.createElement('div');
-            messageContainer.className = 'bot-message max-w-[80%]';
+            messageContainer.className = 'bot-message';
 
             const messageContent = document.createElement('div');
             messageContent.innerHTML = data.response;
-
-            const timestamp = document.createElement('div');
-            timestamp.className = 'text-xs text-gray-400 mt-1';
-            timestamp.textContent = getCurrentTime();
+            messageContent.style.width = '100%'; // Ensure content takes full width in flexbox
 
             messageContainer.appendChild(messageContent);
-            messageContainer.appendChild(timestamp);
-
+            
             botResponseDiv.appendChild(botAvatar);
             botResponseDiv.appendChild(messageContainer);
             chatMessages.appendChild(botResponseDiv);
-            
-            // Process any suggested questions
+
+            // Check for suggested questions in the response
             if (data.suggestedQuestions && data.suggestedQuestions.length > 0) {
                 renderQuestionChips(data.suggestedQuestions);
+            } else {
+                // If no suggested questions, still render the schedule call button
+                renderQuestionChips([]);
             }
             
             // Post-process any lists for better formatting
@@ -470,27 +547,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const errorDiv = document.createElement('div');
             errorDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
             
-            const botAvatar = document.createElement('img');
-            botAvatar.src = './images/Logo-1.png';
-            botAvatar.alt = 'Bot';
-            botAvatar.className = 'h-8 w-8 rounded-full';
+            // Use the createLogoAvatar function
+            const botAvatar = createLogoAvatar();
             
             const messageContainer = document.createElement('div');
-            messageContainer.className = 'bot-message error max-w-[80%]';
+            messageContainer.className = 'bot-message error';
             
             const messageContent = document.createElement('div');
             messageContent.innerHTML = 'Sorry, I encountered an error connecting to the server. Please check your connection and try again.';
-            
-            const timestamp = document.createElement('div');
-            timestamp.className = 'text-xs text-gray-400 mt-1';
-            timestamp.textContent = getCurrentTime();
+            messageContent.style.width = '100%'; // Ensure content takes full width in flexbox
             
             messageContainer.appendChild(messageContent);
-            messageContainer.appendChild(timestamp);
             
             errorDiv.appendChild(botAvatar);
             errorDiv.appendChild(messageContainer);
             chatMessages.appendChild(errorDiv);
+            
+            // Render schedule call button without suggested questions
+            renderQuestionChips([]);
             
             // Scroll to bottom
             scrollToBottom();
@@ -507,148 +581,158 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Post-process step list items for number+title beside each other
+    // Post-process bot messages for consistent styling
     function postProcessStepLists() {
-        // Find all ordered list items
-        chatMessages.querySelectorAll('ol.bot-list li').forEach(li => {
-            // Check if the list item starts with a number followed by a title
+        // Convert all ordered lists to unordered lists with bullet points
+        chatMessages.querySelectorAll('ol').forEach(ol => {
+            ol.style.listStyleType = 'disc';
+        });
+        
+        // Remove any special formatting from list items
+        chatMessages.querySelectorAll('li').forEach(li => {
+            // Preserve the text content but remove special formatting
             const text = li.textContent.trim();
-            const match = text.match(/^(\d+)\s*[-:.)]?\s+(.+)$/);
+            li.classList.remove('step-list-item');
             
-            if (match) {
-                const number = match[1];
-                const title = match[2];
-                
-                // Only apply special formatting if the title isn't just a number
-                if (!/^\d+$/.test(title.trim())) {
-                    li.innerHTML = `<span class='step-num'>${number}.</span> <span class='step-title'>${title}</span>`;
-                    li.classList.add('step-list-item');
-                }
+            // If the li has special spans for numbers/titles, simplify them
+            if (li.querySelector('.step-num') || li.querySelector('.step-title') || 
+                li.querySelector('.list-number') || li.querySelector('.numbered-title')) {
+                li.innerHTML = text;
             }
         });
         
-        // Wrap phone numbers and emails in .contact-info
-        chatMessages.querySelectorAll('span, div, p, li').forEach(el => {
-            if (el.children.length === 0) {
-                let html = el.innerHTML;
-                // Phone numbers
-                html = html.replace(/(\+\d{1,3}[\s-]?\d{3,}[\s-]?\d{3,}[\s-]?\d{3,})/g, '<span class="contact-info">$1</span>');
-                // Emails
-                html = html.replace(/([\w.-]+@[\w.-]+\.[a-zA-Z]{2,})/g, '<span class="contact-info">$1</span>');
-                el.innerHTML = html;
+        // Keep phone numbers and emails as plain text without special formatting
+        chatMessages.querySelectorAll('.contact-info').forEach(el => {
+            const text = el.textContent;
+            const parent = el.parentNode;
+            if (parent) {
+                const textNode = document.createTextNode(text);
+                parent.replaceChild(textNode, el);
             }
+        });
+        
+        // Apply correct font styling to titles in bot messages
+        chatMessages.querySelectorAll('.bot-message').forEach(botMessage => {
+            // Find all heading elements and strong tags (titles)
+            const titleElements = botMessage.querySelectorAll('h1, h2, h3, h4, h5, h6, strong, b');
+            
+            titleElements.forEach(title => {
+                title.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+                title.style.fontWeight = "600";
+                title.style.fontSize = "20px";
+                title.style.lineHeight = "150%";
+                title.style.letterSpacing = "0%";
+                title.style.color = "var(--color-text)";
+                title.style.marginBottom = "8px";
+            });
+            
+            // Apply consistent styling to paragraphs and other text elements
+            const textElements = botMessage.querySelectorAll('p, span, div:not(.chip):not(.suggested-questions):not(.suggested-questions-container)');
+            
+            textElements.forEach(text => {
+                if (!text.querySelector('h1, h2, h3, h4, h5, h6, strong, b')) {
+                    text.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+                    text.style.fontWeight = "500";
+                    text.style.fontSize = "16px";
+                    text.style.lineHeight = "150%";
+                    text.style.letterSpacing = "0%";
+                    text.style.color = "var(--color-text)";
+                }
+            });
         });
     }
     
-    // Function to format bot responses with HTML formatting
+    // Import marked at the top of your file:
+    // import { marked } from 'marked';
+
+    // Optional: Add CSS classes or modify renderer for advanced customization
+    if (typeof marked !== 'undefined' && marked.setOptions) {
+        marked.setOptions({
+            breaks: true,
+            gfm: true
+        });
+    }
+
+    /**
+     * Escape HTML to prevent XSS
+     */
+    function escapeHtml(text) {
+        return text.replace(/&/g, "&amp;")
+                   .replace(/</g, "&lt;")
+                   .replace(/>/g, "&gt;");
+    }
+
+    /**
+     * Replace known keywords with styled elements
+     */
+    function highlightKeywords(html) {
+        return html
+            .replace(/Coty/g, '<span class="highlight">Coty</span>')
+            .replace(/Rajdip Khavad/g, '<strong class="team-lead">Rajdip Khavad</strong>');
+    }
+
+    // Function removed as per user request
+
+    /**
+     * Format contact information (emails and phones)
+     */
+    function formatContactInfo(html) {
+        const emailRegex = /\b[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}\b/g;
+        const phoneRegex = /(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/g;
+
+        return html
+            .replace(emailRegex, match => `<a href="mailto:${match}" class="email-link">${match}</a>`)
+            .replace(phoneRegex, match => `<span class="phone-number">${match}</span>`);
+    }
+
+    /**
+     * Add Q&A formatting and other enhancements
+     */
+    function enhanceStructure(html) {
+        // Add separators after section headings
+        html = html.replace(/<\/h[23]>/g, '</h3><div class="title-separator"></div>');
+
+        // Q&A formatting
+        html = html.replace(/<p>Q:\s*(.+?)<br\s*\/?>(?:A:|A\.)\s*(.+?)<\/p>/g, `
+            <div class="qa-item">
+                <div class="question"><strong>Q:</strong> $1</div>
+                <div class="answer"><strong>A:</strong> $2</div>
+            </div>
+        `);
+
+        return html;
+    }
+
+    /**
+     * Main formatting function
+     */
     function formatBotResponse(text) {
         try {
-            // Basic safety check
             if (!text || typeof text !== 'string') {
                 console.error('Invalid text passed to formatBotResponse:', text);
                 return 'Sorry, I encountered an error processing this response.';
             }
-    
-            // Replace line breaks with <br> tags
-            text = text.replace(/\n/g, '<br>');
-    
-            // Format section titles with icons
-            const sectionTitles = {
-                'Services:': '<i class="fas fa-cogs"></i> Services',
-                'About Us:': '<i class="fas fa-info-circle"></i> About Us',
-                'Contact:': '<i class="fas fa-envelope"></i> Contact',
-                'Projects:': '<i class="fas fa-project-diagram"></i> Projects',
-                'Team:': '<i class="fas fa-users"></i> Team',
-                'Technologies:': '<i class="fas fa-laptop-code"></i> Technologies',
-                'Process:': '<i class="fas fa-tasks"></i> Process',
-                'Benefits:': '<i class="fas fa-award"></i> Benefits'
-            };
-    
-            // Apply section title formatting
-            Object.keys(sectionTitles).forEach(title => {
-                const regex = new RegExp(title, 'g');
-                text = text.replace(regex, `<h3 class="message-title">${sectionTitles[title]}</h3>`);
-            });
-    
-            // Format markdown headings (##, ###)
-            text = text.replace(/(?:<br>|^)\s*(#{2,3})\s+(.+?)(?=<br>|$)/g, function(match, hashes, content) {
-                const level = hashes.length;
-                return `<h${level} class="message-title">${content.trim()}</h${level}>`;
-            });
-    
-            // Format bold text (markdown style)
-            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // Normalize line breaks for consistent processing
+            text = text.replace(/\r\n|\r/g, '\n');
+
+            // Escape HTML first
+            const safeText = escapeHtml(text);
             
-            // Format italic text (markdown style)
-            text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    
-            // Format bullet points
-            const bulletListPattern = /((?:^|<br>)\s*[-*]\s+.*(?:<br>\s*[-*]\s+.*)*)/g;
-            text = text.replace(bulletListPattern, function(match) {
-                // Split the list into individual items
-                const items = match.split(/<br>\s*[-*]\s+/);
-                // Remove empty items and trim each item
-                const filteredItems = items.filter(item => item.trim()).map(item => item.trim());
-                // Convert to HTML list
-                if (filteredItems.length > 0) {
-                    return '<ul class="bot-list">' + 
-                        filteredItems.map(item => `<li class="bot-list-item">${item}</li>`).join('') + 
-                        '</ul>';
-                }
-                return match; // Return original if no valid items
-            });
-    
-            // Format numbered lists (lines starting with 1., 2., etc.)
-            const numberedListPattern = /((?:^|<br>)\s*\d+\.\s+.*(?:<br>\s*\d+\.\s+.*)*)/g;
-            text = text.replace(numberedListPattern, function(match) {
-                // Split the list into individual items
-                const items = match.split(/<br>\s*\d+\.\s+/);
-                // Remove empty items and trim each item
-                const filteredItems = items.filter(item => item.trim()).map(item => item.trim());
-                // Convert to HTML list
-                if (filteredItems.length > 0) {
-                    return '<ol class="bot-list">' + 
-                        filteredItems.map(item => `<li class="bot-list-item">${item}</li>`).join('') + 
-                        '</ol>';
-                }
-                return match; // Return original if no valid items
-            });
-            
-            // Format phone numbers with special styling
-            const phonePattern = /(\+?\d{1,3}[-.\\s]?)?\(?\d{3}\)?[-.\\s]?\d{3}[-.\\s]?\d{4}/g;
-            text = text.replace(phonePattern, '<span class="phone-number">$&</span>');
-    
-            // Format email addresses
-            const emailPattern = /[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}/g;
-            text = text.replace(emailPattern, '<a href="mailto:$&" class="email-link">$&</a>');
-            
-            // Reduce extra spacing between paragraphs
-            text = text.replace(/<br><br><br>/g, '<br><br>');
-            text = text.replace(/<\/p><br><br>/g, '</p><br>');
-            
-            // Add special styling for Rajdip Khavad mentions
-            text = text.replace(/Rajdip Khavad/g, '<strong class="team-lead">Rajdip Khavad</strong>');
-    
-            // Format phone numbers to prevent breaking
-            text = text.replace(/(\+\d{1,3}[\s-]?\d{3,}[\s-]?\d{3,}[\s-]?\d{3,})/g, '<span class="contact-info">$1</span>');
-            text = text.replace(/(\d{3,}[\s-]?\d{3,}[\s-]?\d{4,})/g, '<span class="contact-info">$1</span>');
-            
-            // Format any remaining numbered items that weren't part of a list
-            text = text.replace(/<br>(\d+)\. ([^<]+)(?!<\/li>)/g, '<div class="numbered-item"><span class="list-number">$1.</span> <span class="numbered-content">$2</span></div>');
-            
-            // Add line breaks after titles
-            text = text.replace(/<\/h3>/g, '</h3><div class="title-separator"></div>');
-            
-            // Format Q&A style content with better spacing
-            text = text.replace(/Q: (.+)<br>A: (.+)/g, '<div class="qa-item"><div class="question"><strong>Q:</strong> $1</div><div class="answer"><strong>A:</strong> $2</div></div>');
-            
-            // Highlight company name
-            text = text.replace(/Code Theorem/g, '<span class="highlight">Code Theorem</span>');
-            
-            return text;
+            // Convert markdown to HTML
+            let html = (typeof marked !== 'undefined') ? marked.parse(safeText) : safeText;
+
+            // Apply enhancements
+            html = highlightKeywords(html);
+            // applySectionIcons removed as per user request
+            html = formatContactInfo(html);
+            html = enhanceStructure(html);
+
+            return html;
+
         } catch (error) {
             console.error('Error in formatBotResponse:', error);
-            return text; // Return original text if there's an error
+            return 'Oops! Something went wrong formatting this message.';
         }
     }
     

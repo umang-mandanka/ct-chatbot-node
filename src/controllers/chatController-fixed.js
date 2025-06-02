@@ -56,7 +56,7 @@ You are the official, friendly, and professional chatbot for **${agency.name}**.
 
 ---
 
-**🧠 GENERAL BEHAVIOR**
+**GENERAL BEHAVIOR**
 - Always speak on behalf of **${agency.name}** using **"we"**, never "they" or "the company"
 - Respond with confidence and clarity
 - Sound human, warm, and professional — never robotic or overly brief
@@ -65,22 +65,22 @@ You are the official, friendly, and professional chatbot for **${agency.name}**.
 
 ---
 
-**🚫 STRICTLY AVOID**
+**STRICTLY AVOID**
 - Speculating or guessing
 - Using the words: "data", "information", "provided", "unfortunately"
 - Mentioning anything not clearly defined below
+- Using emojis in responses
 
 ---
 - Feel free to use your own formatting style while keeping responses professional
-- Use appropriate styling with emojis, bold text, and other markdown features
+- Use appropriate styling with bold text and other markdown features
 - Apply theme colors and visual elements to make responses engaging
 - Structure information in a visually appealing way
 ---
 
-**📦 RESPONSE STRUCTURE & STYLE**
+**RESPONSE STRUCTURE & STYLE**
 - Feel free to use creative formatting and styling
 - Use vibrant theme colors and visual elements in your responses
-- Apply emojis liberally to make responses engaging and lively (🚀, ✅, 💡, 🎨, 💻, etc.)
 - Create visually structured content with varied formatting
 - Use bold, italics, and other markdown features for emphasis
 - Organize information in an aesthetically pleasing way
@@ -89,7 +89,7 @@ You are the official, friendly, and professional chatbot for **${agency.name}**.
 - Use creative headers and dividers
 - Feel free to experiment with different formatting styles
 
-**🏢 Agency Overview**
+**Agency Overview**
 - **About Us:** ${agency.description}
 - **Mission:** ${agency.mission}
 - **Tagline:** ${agency.tagline}
@@ -98,7 +98,7 @@ You are the official, friendly, and professional chatbot for **${agency.name}**.
 
 ---
 
-**👥 Team & Contact**
+**Team & Contact**
 - **Team Roles:** ${agency.team_roles.join(', ')}
 - **Work Email:** ${agency.contact.work_inquiries.email}
 - **Work Phone:** ${agency.contact.work_inquiries.phone}
@@ -108,7 +108,7 @@ You are the official, friendly, and professional chatbot for **${agency.name}**.
 
 ---
 
-**📊 Key Stats**
+**Key Stats**
 - Industries Served: ${agency.stats.industries_served}
 - Clients Served: ${agency.stats.clients_served}
 - Projects Completed: ${agency.stats.projects_completed}
@@ -120,13 +120,13 @@ You are the official, friendly, and professional chatbot for **${agency.name}**.
 
 ---
 
-**🛠️ Services We Offer**
+**Services We Offer**
 ${services.map(s => `- **${s.category}**: ${s.description}  
    Offerings: ${s.offerings.map(o => o.name).join(', ')}`).join('\n')}
 
 ---
 
-**🔗 Social Links**
+**Social Links**
 ${agency.social_links.map(link => `- ${link}`).join('\n')}
 
 
@@ -141,8 +141,7 @@ ${agency.social_links.map(link => `- ${link}`).join('\n')}
         messages: [
           {
             role: 'system',
-            content: `You are the official chatbot of CodeTheorem. Speak as "we". Respond using creative markdown formatting with theme colors. Use emojis, bold text, and visually appealing structures.
-`
+            content: `You are the official chatbot of CodeTheorem. Speak as "we". Respond using creative markdown formatting with theme colors. Use bold text and visually appealing structures. Do not use emojis.`
           },
           {
             role: 'user',
@@ -210,7 +209,7 @@ ${agency.social_links.map(link => `- ${link}`).join('\n')}
 
       // Simple flat list of all possible follow-up questions
       const allPossibleQuestions = [
-        // 🎯 Services
+        // Services
         "What services does CodeTheorem provide?",
         "What's included in your design services?",
         "What development services do you offer?",
@@ -220,40 +219,40 @@ ${agency.social_links.map(link => `- ${link}`).join('\n')}
         "Do you offer UX audits or product redesign?",
         "What are your industry-specific design offerings?",
       
-        // 🧠 Process
+        // Process
         "What is your project process?",
         "What are the phases of a typical project?",
         "How do you handle project development?",
         "Do you provide testing and support after launch?",
       
-        // 💡 Technologies
+        // Technologies
         "What technologies do you use for frontend?",
         "What backend technologies do you use?",
         "What tools does your team use for design and collaboration?",
         "What platforms do you support?",
       
-        // 👥 Team & Culture
+        // Team & Culture
         "Who is the Chief of Development at CodeTheorem?",
         "What roles are on your team?",
         "What is your work culture like?",
         "What are some fun facts about your team?",
-        "What’s the BLEMS hiring challenge?",
+        "What's the BLEMS hiring challenge?",
       
-        // 🏆 Industry & Experience
+        // Industry & Experience
         "What industries do you serve?",
         "Have you worked with SaaS companies?",
         "Do you have experience in healthcare projects?",
         "Have you worked with fintech companies?",
         "Can you share case studies or past projects?",
       
-        // 🤝 Engagement & Contact
+        // Engagement & Contact
         "What engagement models do you offer?",
         "How can I start a project with you?",
         "How can I contact CodeTheorem?",
-        "What’s your average response time?",
+        "What's your average response time?",
         "Can I schedule a consultation call?",
       
-        // 🧾 Recognition & Results
+        // Recognition & Results
         "Are you a Clutch-rated agency?",
         "What are your key achievements?",
         "How many clients have you worked with?",
@@ -406,15 +405,15 @@ function enhanceResponseStyling(htmlResponse) {
     .replace(/<h2>(.*?)<\/h2>/g, '<h2 class="message-title">$1</h2>')
     .replace(/<h3>(.*?)<\/h3>/g, '<h3 class="message-title">$1</h3>')
     
-    // Add icons to common section titles
-    .replace(/<h[23]>\s*Services\s*<\/h[23]>/gi, '<h3 class="message-title"><i class="fas fa-cogs"></i> Services</h3>')
-    .replace(/<h[23]>\s*About Us\s*<\/h[23]>/gi, '<h3 class="message-title"><i class="fas fa-info-circle"></i> About Us</h3>')
-    .replace(/<h[23]>\s*Contact\s*<\/h[23]>/gi, '<h3 class="message-title"><i class="fas fa-envelope"></i> Contact</h3>')
-    .replace(/<h[23]>\s*Projects\s*<\/h[23]>/gi, '<h3 class="message-title"><i class="fas fa-project-diagram"></i> Projects</h3>')
-    .replace(/<h[23]>\s*Team\s*<\/h[23]>/gi, '<h3 class="message-title"><i class="fas fa-users"></i> Team</h3>')
-    .replace(/<h[23]>\s*Technologies\s*<\/h[23]>/gi, '<h3 class="message-title"><i class="fas fa-laptop-code"></i> Technologies</h3>')
-    .replace(/<h[23]>\s*Process\s*<\/h[23]>/gi, '<h3 class="message-title"><i class="fas fa-tasks"></i> Process</h3>')
-    .replace(/<h[23]>\s*Benefits\s*<\/h[23]>/gi, '<h3 class="message-title"><i class="fas fa-award"></i> Benefits</h3>')
+    // Keep section titles clean without icons
+    .replace(/<h[23]>\s*Services\s*<\/h[23]>/gi, '<h3 class="message-title">Services</h3>')
+    .replace(/<h[23]>\s*About Us\s*<\/h[23]>/gi, '<h3 class="message-title">About Us</h3>')
+    .replace(/<h[23]>\s*Contact\s*<\/h[23]>/gi, '<h3 class="message-title">Contact</h3>')
+    .replace(/<h[23]>\s*Projects\s*<\/h[23]>/gi, '<h3 class="message-title">Projects</h3>')
+    .replace(/<h[23]>\s*Team\s*<\/h[23]>/gi, '<h3 class="message-title">Team</h3>')
+    .replace(/<h[23]>\s*Technologies\s*<\/h[23]>/gi, '<h3 class="message-title">Technologies</h3>')
+    .replace(/<h[23]>\s*Process\s*<\/h[23]>/gi, '<h3 class="message-title">Process</h3>')
+    .replace(/<h[23]>\s*Benefits\s*<\/h[23]>/gi, '<h3 class="message-title">Benefits</h3>')
     
     // Style lists with custom classes
     .replace(/<ul>/g, '<ul class="bot-list">')

@@ -8,37 +8,196 @@
     <link rel="stylesheet" href="css/chat-custom.css">
     <link rel="stylesheet" href="css/bot-list.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body >
-    <!-- Floating Chat Button -->
-    <button id="chat-toggle" class="chat-toggle-btn fixed  z-50 bg-primary hover:bg-blue-600 text-secondary rounded-full w-16 h-16 flex items-center justify-center shadow-lg transition-all" style="bottom: 0px;right: 0px;">
-        <i class="fas fa-comment-dots text-2xl"></i>
-    </button>
+    <!-- Fixed Chat Input Bar -->
+    <!-- Fixed Chat Input Bar (Centered Bottom, 337x48px) -->
+    <!-- Chat Input Bar -->
+<div id="chat-input-bar" class="fixed z-50 left-1/2 bottom-6 transform -translate-x-1/2 pointer-events-none" style="width: 337px; height: 48px; transition: width 0.3s ease;">
+    <form id="chatbar-form" class="flex items-center gap-2 w-full h-full px-2 pointer-events-auto chatbar-glass">
+      <!-- Left Logo -->
+      <div style="width: 24px; height: 24px; border-radius: 40px; border-width: 1px; border-style: solid; border-color: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; background: linear-gradient(90deg, #1350FF 0%, #D900FF 100%);">
+        <svg width="16" height="14" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0_216_6931)">
+            <g clip-path="url(#clip1_216_6931)">
+              <path d="M16.3486 13.7776L18.0254 15.9953C18.5869 16.7345 18.0614 17.7802 17.1377 17.7805H3.20606C2.28223 17.7804 1.7568 16.7165 2.31837 15.9953L4.0088 13.7776H16.3486ZM11.0869 6.81857L16.3584 13.7776H16.3486L11.0869 6.81857ZM10.1983 6.37228C9.86789 6.37449 9.53628 6.52339 9.31153 6.81857L4.0088 13.7776H3.98536L9.31153 6.81857C9.53025 6.51934 9.86336 6.37046 10.1983 6.37228ZM10.1983 6.37228C10.5337 6.37003 10.8679 6.51885 11.0869 6.81857C10.8619 6.52289 10.5291 6.37408 10.1983 6.37228Z" fill="white"/>
+              <path d="M8.89528 0.779515C9.47499 0.022266 10.6164 0.022266 11.1961 0.779515L19.8006 12.174C20.2897 12.8411 19.8185 13.7785 18.9851 13.7785H16.3591L11.0867 6.81858C10.6338 6.22372 9.74605 6.22364 9.3113 6.81858L3.98513 13.7785H1.01442C0.181116 13.7785 -0.28969 12.8231 0.217547 12.174L8.89528 0.779515Z" fill="white"/>
+            </g>
+          </g>
+          <defs>
+            <clipPath id="clip0_216_6931">
+              <rect width="20" height="17.561" fill="white" transform="translate(0 0.219513)"/>
+            </clipPath>
+            <clipPath id="clip1_216_6931">
+              <rect width="20" height="17.561" fill="white" transform="translate(0 0.219757)"/>
+            </clipPath>
+          </defs>
+        </svg>
+      </div>
+  
+      <!-- Input Field -->
+      <input
+        type="text"
+        id="chatbar-input"
+        placeholder="Ask Coty..."
+        class="bg-transparent outline-none text-base flex-1 min-w-0"
+        style="background-color: transparent; border-radius: 44px; padding-left: 16px; padding-top: 8px; padding-bottom: 8px; padding-right: 8px; height: 32px;"
+        autocomplete="off"
+      />
+  
+      <!-- Send Button -->
+      <button type="submit" style="
+        width: 32px;
+        height: 32px;
+        border-radius: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: linear-gradient(90deg, #1350FF 0%, #D900FF 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      ">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.293 12.293L6.707 13.707L13.414 6.99997L6.707 0.292969L5.293 1.70697L9.586 5.99997H0V7.99997H9.586L5.293 12.293Z" fill="white"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+  
+  <!-- Chat Bar Styles -->
+  <style>
+    #chatbar-form{
+     padding: 8px 8px 8px 16px;
+    }
+    /* Chat input bar container */
+    #chat-input-bar {
+      position: fixed !important;
+      bottom: 24px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      z-index: 9999 !important;
+      width: 337px !important;
+      height: 48px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      pointer-events: none;
+      transition: width 0.3s ease !important;
+    }
     
+    /* Expanded state for input bar */
+    #chat-input-bar.expanded {
+      width: 700px !important;
+    }
+    
+    /* Glass effect for the input bar */
+    .chatbar-glass {
+      border-radius: 44px !important;
+      border: 1px solid !important;
+      border-image-source: linear-gradient(90deg, rgba(19, 80, 255, 0.1), rgba(217, 0, 255, 0.1)) !important;
+      background: linear-gradient(90deg, rgba(19, 80, 255, 0.1), rgba(217, 0, 255, 0.1)) !important;
+      box-shadow: 0 0 10px rgba(68, 61, 255, 0.25) !important;
+      backdrop-filter: blur(40px) !important;
+      width: 100% !important;
+      height: 100% !important;
+      pointer-events: auto;
+    }
+  
+    #chatbar-input::placeholder {
+      color: black;
+      opacity: 1;
+    }
+    
+    /* Remove default focus border */
+    #chatbar-input:focus {
+      outline: none !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+    
+    /* Ensure the form takes full space of the container */
+    #chatbar-form {
+      width: 100% !important;
+      height: 100% !important;
+    }
+    
+    /* Input bar expanded state */
+    #chat-input-bar {
+      transition: width 0.3s ease !important;
+      width: 337px !important;
+    }
+    
+    #chat-input-bar.expanded {
+      width: 700px !important;
+    }
+    
+    /* Reposition chatbox to appear centered above input bar */
+    .chatbox {
+  position: fixed !important;
+  bottom: 88px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 700px !important;
+  height: 76% !important;
+  z-index: 9998 !important;
+
+  border-radius: 24px !important;
+  border: 1px solid transparent !important;
+
+
+  backdrop-filter: blur(40px) !important;
+  box-shadow: 0px 0px 10px 0px rgba(68, 61, 255, 0.25) !important;
+
+  transition: all 0.3s ease !important;
+  opacity: 0;
+  visibility: hidden;
+}
+
+    
+    /* Visible state for chatbox */
+    .chatbox.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+  
     <!-- Chatbot Box -->
     <div id="chatbox" class="chatbox hidden">
         <!-- Chat Header -->
-        <div class="chat-header flex items-center gap-3 px-4 py-3 border-b">
-            <div class="flex items-center gap-3">
-                <img src="./images/Logo-1.png" alt="Agency Logo" class="h-10 w-10 rounded-full border-2 bg-white border-white shadow object-cover">
+        <div class="chat-header flex items-center gap-3 px-4 py-3" style="box-shadow: 0px 0px 10px 0px rgba(68, 61, 255, 0.25); border-bottom: 1px solid rgba(255, 255, 255, 1);">
+            <div class="flex items-center " style="gap: 8px;">
+                <!-- New logo container with specified dimensions -->
+                <div style="width: 32px; height: 32px; border-radius: 40px; border-width: 1px; border-style: solid; border-color: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; background: linear-gradient(90deg, #1350FF 0%, #D900FF 100%);">
+                    <!-- New SVG logo -->
+                    <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_216_6931)">
+                            <g clip-path="url(#clip1_216_6931)">
+                                <path d="M16.3486 13.7776L18.0254 15.9953C18.5869 16.7345 18.0614 17.7802 17.1377 17.7805H3.20606C2.28223 17.7804 1.7568 16.7165 2.31837 15.9953L4.0088 13.7776H16.3486ZM11.0869 6.81857L16.3584 13.7776H16.3486L11.0869 6.81857ZM10.1983 6.37228C9.86789 6.37449 9.53628 6.52339 9.31153 6.81857L4.0088 13.7776H3.98536L9.31153 6.81857C9.53025 6.51934 9.86336 6.37046 10.1983 6.37228ZM10.1983 6.37228C10.5337 6.37003 10.8679 6.51885 11.0869 6.81857C10.8619 6.52289 10.5291 6.37408 10.1983 6.37228Z" fill="white"/>
+                                <path d="M8.89528 0.779515C9.47499 0.022266 10.6164 0.022266 11.1961 0.779515L19.8006 12.174C20.2897 12.8411 19.8185 13.7785 18.9851 13.7785H16.3591L11.0867 6.81858C10.6338 6.22372 9.74605 6.22364 9.3113 6.81858L3.98513 13.7785H1.01442C0.181116 13.7785 -0.28969 12.8231 0.217547 12.174L8.89528 0.779515Z" fill="white"/>
+                            </g>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_216_6931">
+                                <rect width="20" height="17.561" fill="white" transform="translate(0 0.219513)"/>
+                            </clipPath>
+                            <clipPath id="clip1_216_6931">
+                                <rect width="20" height="17.561" fill="white" transform="translate(0 0.219757)"/>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </div>
                 <div class="flex flex-col">
-                    <span class="text-black font-bold text-lg">codetheorem</span>
-                    <div class="flex items-center">
-                        <span class="text-secondary/80 text-xs">Agency Bot</span>
-                        <span class="ml-2 inline-block w-2 h-2 bg-green-400 rounded-full"></span>
-                    </div>
+                    <!-- Updated name with gradient text and new font style -->
+                    <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 16px; line-height: 150%; letter-spacing: 0%; background: linear-gradient(90deg, #1350FF 0%, #D900FF 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Coty</span>
+                   
                 </div>
             </div>
             <div class="ml-auto flex gap-3">
-                <button id="refresh-chat" class="chat-header-btn" title="Clear chat history">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
-                <button id="maximize-chat" class="chat-header-btn" title="Maximize chat">
-                    <i class="fas fa-expand-arrows-alt"></i>
-                </button>
-                <button id="close-chat" class="chat-header-btn" title="Close chat">
-                    <i class="fas fa-times"></i>
+                
+                <button id="close-chat" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer;" title="Close chat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16.293 9.293L12 13.586L7.70697 9.293L6.29297 10.707L12 16.414L17.707 10.707L16.293 9.293Z" fill="#787878"/>
+                    </svg>
                 </button>
             </div>
         </div>
@@ -51,7 +210,26 @@
         <!-- Typing Indicator (initially hidden) -->
         <div id="typing-indicator" class="hidden px-4 py-2">
             <div class="flex items-start gap-2">
-                <img src="./images/Logo-1.png" alt="Bot" class="h-8 w-8 rounded-full">
+                <!-- Logo container with same styling as header -->
+                <div style="width: 32px; height: 32px; border-radius: 40px; border-width: 1px; border-style: solid; border-color: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; background: linear-gradient(90deg, #1350FF 0%, #D900FF 100%);">
+                    <!-- SVG logo -->
+                    <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_216_6931)">
+                            <g clip-path="url(#clip1_216_6931)">
+                                <path d="M16.3486 13.7776L18.0254 15.9953C18.5869 16.7345 18.0614 17.7802 17.1377 17.7805H3.20606C2.28223 17.7804 1.7568 16.7165 2.31837 15.9953L4.0088 13.7776H16.3486ZM11.0869 6.81857L16.3584 13.7776H16.3486L11.0869 6.81857ZM10.1983 6.37228C9.86789 6.37449 9.53628 6.52339 9.31153 6.81857L4.0088 13.7776H3.98536L9.31153 6.81857C9.53025 6.51934 9.86336 6.37046 10.1983 6.37228ZM10.1983 6.37228C10.5337 6.37003 10.8679 6.51885 11.0869 6.81857C10.8619 6.52289 10.5291 6.37408 10.1983 6.37228Z" fill="white"/>
+                                <path d="M8.89528 0.779515C9.47499 0.022266 10.6164 0.022266 11.1961 0.779515L19.8006 12.174C20.2897 12.8411 19.8185 13.7785 18.9851 13.7785H16.3591L11.0867 6.81858C10.6338 6.22372 9.74605 6.22364 9.3113 6.81858L3.98513 13.7785H1.01442C0.181116 13.7785 -0.28969 12.8231 0.217547 12.174L8.89528 0.779515Z" fill="white"/>
+                            </g>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_216_6931">
+                                <rect width="20" height="17.561" fill="white" transform="translate(0 0.219513)"/>
+                            </clipPath>
+                            <clipPath id="clip1_216_6931">
+                                <rect width="20" height="17.561" fill="white" transform="translate(0 0.219757)"/>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </div>
                 <div class="bg-primary/5 rounded-xl px-4 py-2 inline-block">
                     <div class="flex gap-1 items-center">
                         <div class="w-2 h-2 bg-primary/30 rounded-full animate-pulse"></div>
@@ -62,18 +240,10 @@
             </div>
         </div>
         
-        <!-- Chat Input Form -->
-        <form id="chat-form" class="flex items-center gap-3 p-4 border-t bg-white shadow-inner">
-            <div class="relative flex-1">
-                <input type="text" id="user-input" autocomplete="off" placeholder="Type your message..." class="w-full border-none bg-gray-100 rounded-full pl-6 pr-8 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white text-sm transition-all shadow-inner" />
-
-            </div>
-            <button type="submit" class="send-btn gradient-btn text-white rounded-full w-12 h-12 flex items-center justify-center transition-all shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 border-2 border-whitey">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </form>
+        
     </div>
     
     <script src="js/script-improved-fixed.js"></script>
+    <script src="js/chat-input-handler.js"></script>
 </body>
 </html>

@@ -43,52 +43,32 @@ body {
   background: #aaa;
 }
 
-/* Chatbox Container */
+/* Chatbox Container - Base styles only (positioning handled in index.html) */
 .chatbox {
-  box-shadow: var(--shadow-xl);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border-radius: 16px;
-  background: white;
-  position: fixed;
-  bottom: 80px;
-  right: 24px;
-  width: 350px;
-  max-width: 35vw;
-  height: 500px;
-  max-height: 70vh;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  z-index: 10000;
-  transform-origin: bottom right;
-  opacity: 1;
-  transform: scale(1);
+  overflow: hidden;
+  /* Most styling moved to index.html for the new UI */
 }
 
-/* Maximized state */
-.chatbox.maximized {
-  width: 90vw !important;
-  height: 90vh !important;
-  max-width: 50vw !important;
-  max-height: 80vh !important;
+
+/* Maximized state - removed as we're using fixed dimensions now */
+
+/* Chatbar glass effect */
+.chatbar-glass {
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 44px !important;
+  background: linear-gradient(90deg, rgba(19, 80, 255, 0.1) 0%, rgba(217, 0, 255, 0.1) 100%) !important;
+  backdrop-filter: blur(40px) !important;
+  box-shadow: 0px 0px 10px 0px rgba(68, 61, 255, 0.25) !important;
 }
 
-/* Transitioning state */
-.chatbox.transitioning {
-  transition: none !important;
+/* Transitions for chatbox and input bar */
+.chatbox {
+  transition: opacity 0.3s ease !important;
 }
 
-/* For smooth transition back to default size */
-.chatbox:not(.maximized) {
-  width: 100%;
-  max-width: 30%;
-  height: 100%;
-  max-height: 65%;
-  bottom: 80px;
-  right: 24px;
-  left: auto;
-  top: auto;
-}
+
 
 /* Responsive: keep transitions for mobile */
 @media (max-width: 768px) {
@@ -98,14 +78,7 @@ body {
     bottom: 80px; /* Position it just above the chat icon */
   right: 24px; /* Consistent with iframe's 24px spacing */
   }
-  .chatbox.maximized {
-    width: 100%;
-    max-width: 50%;
-    height: 100%;
- 
-    bottom: 80px; /* Position it just above the chat icon */
-    right: 24px; /* Consistent with iframe's 24px spacing */
-  }
+
 }
 
 @media (max-width: 480px) {
@@ -115,43 +88,34 @@ body {
     bottom: 80px; /* Position it just above the chat icon */
   right: 24px; /* Consistent with iframe's 24px spacing */
   }
-  .chatbox.maximized {
-    width: 100%;
-    max-width: 50%;
-    height: 100%;
-   
-    bottom: 80px; /* Position it just above the chat icon */
-    right: 24px; /* Consistent with iframe's 24px spacing */
-  }
+
 }
 
 
-.chatbox.maximized .chat-messages {
-  height: 100%;
-  max-height: none;
+/* Chat messages height - simplified */
+.chat-messages {
+  height: calc(100% - 120px); /* Adjust based on header and input area height */
 }
 
 /* Gradient Elements */
-.chat-header, .gradient-btn {
-  background: linear-gradient(to right, var(--color-primary), #0039cc);
+.chat-header{
+  background-color: white;
 }
 
-/* Ensure text is white on gradient elements */
-.chat-header, .gradient-btn {
-  color: white;
-}
 
+
+/* Hidden state - simplified to work with our new UI */
 .chatbox.hidden {
-  transform: translateY(20px) scale(0.95);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease-out;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
-.chatbox.maximized.hidden {
-  transform: translate(-50%, -50%) scale(0.95);
-  opacity: 0;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease-out;
+/* Visible state for chatbox */
+.chatbox.visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 
@@ -159,34 +123,146 @@ body {
 /* Chat Messages Container */
 .chat-messages {
   overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
   scroll-behavior: smooth;
   padding: 1rem;
   height: 100%;
   max-height: 100%;
+  width: 100%;
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
-/* User Message */
+/* User Message - Styled like Bot Message */
 .user-message {
-  background-color: var(--color-primary);
-  color: white;
-  border-radius: 18px 18px 0 18px;
-  padding: 0.75rem 1rem;
-  margin-left: auto;
-  box-shadow: var(--shadow-sm);
+  max-width: 80%;
+  min-width: 100px;
+  min-height: 48px;
+  border-radius: 24px;
+  padding: 8px 16px;
+  backdrop-filter: blur(40px);
+  background-color: rgba(0, 0, 0, 0.02);
+  box-shadow: 0 0 10px rgba(68, 61, 255, 0.1);
   animation: fadeIn 0.3s ease-out;
-  margin-bottom: 1rem; /* Reduced from 1.5rem */
+  margin-bottom: 1rem;
+  margin-left: auto;
+
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: 0%;
+  color: var(--color-text);
+
+  position: relative;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  border: 1px solid transparent;
+  
+  /* Add vertical centering */
+  display: flex;
+  align-items: center;
+
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.02)), /* inner background */
+    linear-gradient(90deg, rgba(19, 80, 255, 0.1) 0%, rgba(217, 0, 255, 0.1) 100%); /* border */
 }
 
 /* Bot Message */
 .bot-message {
-  background-color: #f0f0f0;
-  color: var(--color-text);
-  border-radius: 18px 18px 18px 0;
-  padding: 0.75rem 1rem;
-  box-shadow: var(--shadow-sm);
+  max-width: 80%;
+  min-width: 100px;
+  min-height: 48px;
+  border-radius: 24px;
+  padding: 8px 16px;
+  backdrop-filter: blur(40px);
+  background-color: rgba(0, 0, 0, 0.02);
+  box-shadow: 0 0 10px rgba(68, 61, 255, 0.1); /* Optional softer shadow */
   animation: fadeIn 0.3s ease-out;
-  margin-bottom: 1rem; /* Reduced from 1.5rem */
-  white-space: pre-line; /* Preserve line breaks */
+  
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: 0%;
+  color: var(--color-text);
+  max-width: 100%;
+
+  position: relative;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  border: 1px solid transparent;
+  
+  /* Add vertical centering */
+  display: flex;
+  align-items: center;
+  
+  background-image: 
+    linear-gradient(white, white), /* inner background */
+    linear-gradient(90deg, rgba(19, 80, 255, 0.1), rgba(217, 0, 255, 0.1)); /* border */
+}
+
+
+/* Bot Message Error Styling */
+.bot-message.error {
+  border-image-source: linear-gradient(90deg, rgba(234, 67, 53, 0.2) 0%, rgba(217, 0, 255, 0.1) 100%);
+  background-color: rgba(255, 245, 245, 0.9);
+}
+
+/* Bot Message Title Styling */
+.bot-message h1, .bot-message h2, .bot-message h3, .bot-message h4, .bot-message strong, .bot-message b {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 150%;
+  letter-spacing: 0%;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+/* Bot Message Description Styling */
+.bot-message p, .bot-message li, .bot-message div {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: 0%;
+  color: var(--color-text);
+}
+
+/* Override all list styling to use only bullet points */
+.bot-message ul, .bot-message ol {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.bot-message li {
+  margin-bottom: 8px;
+}
+
+/* Remove all special styling for lists */
+.bot-message .step-list-item,
+.bot-message .list-item,
+.bot-message .numbered-item,
+.bot-message .case-study-item,
+.bot-message .industry-item,
+.bot-message .qa-item {
+  display: block;
+  margin-bottom: 8px;
+  padding: 0;
+  border: none;
+}
+
+/* Remove all special number styling */
+.bot-message .step-num,
+.bot-message .list-number,
+.bot-message .numbered-title {
+  display: inline;
+  background: none;
+  color: var(--color-text);
+  font-weight: 500;
+  padding: 0;
+  margin: 0;
 }
 
 /* Message Title Styling */
@@ -524,27 +600,7 @@ li.step-list-item {
 }
 
 /* Chat Header Buttons */
-.chat-header-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.8);
-  background-color: rgba(255, 255, 255, 0.1);
-  transition: all 0.2s ease;
-}
-
-.chat-header-btn:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  transform: scale(1.05);
-}
-
-.chat-header-btn:active {
-  transform: scale(0.95);
-}
+/* Chat header button styles removed - using inline styles */
 
 /* Send Button */
 .send-btn {
@@ -610,7 +666,7 @@ li.step-list-item {
   opacity: 1;
 }
 
-/* Animations */
+/* Animation Keyframes */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -620,52 +676,68 @@ li.step-list-item {
   animation: fadeIn 0.3s ease-out;
 }
 
-/* Suggested Questions Chips */
-.suggested-questions {
-  margin-top: 12px;
+/* Suggested Questions Container */
+.suggested-questions-container {
+  margin-top: -8px; /* Negative margin to reduce space between bot message and suggestions */
   margin-bottom: 16px;
   animation: fadeIn 0.5s ease-out;
+  max-width: 100%;
+}
+
+/* Suggested Questions Chips */
+.suggested-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   width: 100%;
+  margin-top: 8px;
+  align-items: flex-start;
 }
 
 .chip {
-  background-color: rgba(19, 80, 255, 0.1);
-  color: #1350ff;
-  border: 1px solid rgba(19, 80, 255, 0.3);
-  border-radius: 16px;
+  width: 249px;
+  height: 33px;
+  border-radius: 32px;
+  border: 1px solid transparent;
+
+  background: 
+    linear-gradient(90deg, rgba(19, 80, 255, 0.05), rgba(217, 0, 255, 0.05)) padding-box,
+    linear-gradient(90deg, rgba(19, 80, 255, 0.1), rgba(217, 0, 255, 0.1)) border-box;
+
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
   padding: 6px 12px;
-  margin: 4px;
-  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  display: inline-block;
-  max-width: 180px;
+  display: flex;
+  align-items: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  position: relative;
 }
 
 .chip:hover {
-  background-color: rgba(19, 80, 255, 0.2);
+  background: linear-gradient(90deg, rgba(19, 80, 255, 0.1) 0%, rgba(217, 0, 255, 0.1) 100%);
   transform: translateY(-2px);
-  box-shadow: 0 2px 5px rgba(19, 80, 255, 0.2);
+  box-shadow: 0 2px 5px rgba(19, 80, 255, 0.1);
 }
 
 .chip:active {
   transform: translateY(0);
-  background-color: rgba(19, 80, 255, 0.3);
+  background: linear-gradient(90deg, rgba(19, 80, 255, 0.15) 0%, rgba(217, 0, 255, 0.15) 100%);
 }
 
 /* Expanded chip state */
 .chip.expanded {
   max-width: 100%;
-  background-color: rgba(19, 80, 255, 0.2);
-  border-color: rgba(19, 80, 255, 0.5);
+  background: linear-gradient(90deg, rgba(19, 80, 255, 0.1) 0%, rgba(217, 0, 255, 0.1) 100%);
+  border-image-source: linear-gradient(90deg, rgba(19, 80, 255, 0.2) 0%, rgba(217, 0, 255, 0.2) 100%);
   font-weight: 500;
-  box-shadow: 0 2px 5px rgba(19, 80, 255, 0.2);
+  box-shadow: 0 2px 5px rgba(19, 80, 255, 0.1);
   white-space: normal;
-  padding: 8px 16px;
+  padding: 6px 12px;
 }
 
 .chip.expanded::after {
@@ -697,28 +769,9 @@ li.step-list-item {
   animation-delay: 200ms;
 }
 
-/* Chips/Suggested Questions */
-.chip {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
-  padding: 0.5rem 1.5rem;
-  border-radius: 9999px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90vw;
-  display: inline-block;
-  margin: 0;
-}
 
-.chip:hover {
-  background-color: var(--color-primary);
-  color: white;
-}
+
+
 
 /* Container for chips */
 .suggested-questions {
@@ -733,27 +786,62 @@ li.step-list-item {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  /* Chatbox is now centered with fixed width in index.html */
   .chatbox {
-    width: 90%;
-  max-width: 90%;
-    bottom: 80px; /* Position it just above the chat icon */
-    right: 24px; /* Consistent with iframe's 24px spacing */
-  }
-  
-  .chat-messages {
-    height: 100%;
+    width: 90% !important;
+    max-width: 700px !important;
   }
 }
 
 @media (max-width: 480px) {
   .chatbox {
-    width: 100%;
-  max-width: 100%;
-   bottom: 80px; /* Position it just above the chat icon */
-  right: 24px; /* Consistent with iframe's 24px spacing */
+    width: 95% !important;
+    max-width: 95% !important;
   }
   
-  .chat-messages {
-    height: 100%;
+  /* Input bar should also be responsive */
+  #chatbar-form {
+    width: 95% !important;
+    max-width: 337px !important;
   }
+}
+
+
+.space-y-4 > * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Schedule Call Button */
+.schedule-call-button {
+  display: flex;
+  align-items: center;
+  width: 315px;
+  height: 33px;
+  border-radius: 32px;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  gap: 8px;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  position: relative;
+  cursor: pointer;
+ 
+  margin-bottom: 8px;
+  background-image: 
+    linear-gradient(90deg, rgba(19, 80, 255, 0.05) 0%, rgba(217, 0, 255, 0.05) 100%), 
+    linear-gradient(90deg, rgba(19, 80, 255, 0.1) 0%, rgba(217, 0, 255, 0.1) 100%);
+}
+
+.schedule-call-button span {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: 0%;
+  background: linear-gradient(90deg, #1350FF 0%, #D900FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }

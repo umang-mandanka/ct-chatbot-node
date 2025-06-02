@@ -1,3 +1,39 @@
+// Function to create the logo avatar SVG container
+function createLogoAvatar() {
+    const avatarContainer = document.createElement('div');
+    avatarContainer.style.width = '24px';
+    avatarContainer.style.height = '24px';
+    avatarContainer.style.borderRadius = '40px';
+    avatarContainer.style.borderWidth = '1px';
+    avatarContainer.style.borderStyle = 'solid';
+    avatarContainer.style.borderColor = 'rgba(255,255,255,0.2)';
+    avatarContainer.style.display = 'flex';
+    avatarContainer.style.alignItems = 'center';
+    avatarContainer.style.justifyContent = 'center';
+    avatarContainer.style.background = 'linear-gradient(90deg, #1350FF 0%, #D900FF 100%)';
+
+    avatarContainer.innerHTML = `
+        <svg width="16" height="14" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_216_6931)">
+                <g clip-path="url(#clip1_216_6931)">
+                    <path d="M16.3486 13.7776L18.0254 15.9953C18.5869 16.7345 18.0614 17.7802 17.1377 17.7805H3.20606C2.28223 17.7804 1.7568 16.7165 2.31837 15.9953L4.0088 13.7776H16.3486ZM11.0869 6.81857L16.3584 13.7776H16.3486L11.0869 6.81857ZM10.1983 6.37228C9.86789 6.37449 9.53628 6.52339 9.31153 6.81857L4.0088 13.7776H3.98536L9.31153 6.81857C9.53025 6.51934 9.86336 6.37046 10.1983 6.37228ZM10.1983 6.37228C10.5337 6.37003 10.8679 6.51885 11.0869 6.81857C10.8619 6.52289 10.5291 6.37408 10.1983 6.37228Z" fill="white"/>
+                    <path d="M8.89528 0.779515C9.47499 0.022266 10.6164 0.022266 11.1961 0.779515L19.8006 12.174C20.2897 12.8411 19.8185 13.7785 18.9851 13.7785H16.3591L11.0867 6.81858C10.6338 6.22372 9.74605 6.22364 9.3113 6.81858L3.98513 13.7785H1.01442C0.181116 13.7785 -0.28969 12.8231 0.217547 12.174L8.89528 0.779515Z" fill="white"/>
+                </g>
+            </g>
+            <defs>
+                <clipPath id="clip0_216_6931">
+                    <rect width="20" height="17.561" fill="white" transform="translate(0 0.219513)"/>
+                </clipPath>
+                <clipPath id="clip1_216_6931">
+                    <rect width="20" height="17.561" fill="white" transform="translate(0 0.219513)"/>
+                </clipPath>
+            </defs>
+        </svg>
+    `;
+
+    return avatarContainer;
+}
+
 // Function to display error messages in the chat UI
 function displayErrorMessage(errorType, errorMessage) {
     // Default error message if none provided
@@ -112,13 +148,10 @@ async function sendMessageToServer(message) {
             const botDiv = document.createElement('div');
             botDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
             
-            const botAvatar = document.createElement('img');
-            botAvatar.src = './images/Logo-1.png';
-            botAvatar.alt = 'Bot';
-            botAvatar.className = 'h-8 w-8 rounded-full';
+            const botAvatar = createLogoAvatar();
             
             const messageContainer = document.createElement('div');
-            messageContainer.className = 'bot-message max-w-[80%]';
+            messageContainer.className = 'bot-message';
             
             const messageContent = document.createElement('div');
             messageContent.innerHTML = formatBotResponse(data.response);
