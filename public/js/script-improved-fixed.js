@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sessionId: sessionId
             });
             // Send message to server
-            const response = await fetch('http://localhost:3000/api/chat/message', {
+            const response = await fetch('https://ct-chatbot-node.onrender.com/api/chat/message', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

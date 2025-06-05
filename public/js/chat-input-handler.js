@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.sendMessageToServer(message);
                 } else {
                     // Fallback implementation
-                    fetch('http://localhost:3000/api/chat/message', {
+                    fetch('https://ct-chatbot-node.onrender.com/api/chat/message', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
