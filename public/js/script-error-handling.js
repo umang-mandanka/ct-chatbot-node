@@ -80,8 +80,7 @@ function displayErrorMessage(errorType, errorMessage) {
 // Enhanced sendMessageToServer function with improved error handling
 async function sendMessageToServer(message) {
     // Show typing indicator
-    typingIndicator.classList.remove('hidden');
-    typingIndicator.classList.add('flex');
+
     scrollToBottom();
     
     let retries = 0;
@@ -93,7 +92,7 @@ async function sendMessageToServer(message) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
             
-            const response = await fetch('/api/chat/message', {
+            const response = await fetch('http:/localhost:3000/api/chat/message', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -104,9 +103,6 @@ async function sendMessageToServer(message) {
             
             clearTimeout(timeoutId);
             
-            // Hide typing indicator
-            typingIndicator.classList.add('hidden');
-            typingIndicator.classList.remove('flex');
             
             // Handle different HTTP status codes
             if (!response.ok) {
@@ -183,10 +179,7 @@ async function sendMessageToServer(message) {
             
         } catch (error) {
             console.error('Error sending message:', error);
-            
-            // Hide typing indicator
-            typingIndicator.classList.add('hidden');
-            typingIndicator.classList.remove('flex');
+        
             
             // Check for specific error types
             if (error.name === 'AbortError') {

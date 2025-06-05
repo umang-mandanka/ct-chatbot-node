@@ -102,20 +102,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Scroll to bottom
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 
-                // Show typing indicator
-                const typingIndicator = document.getElementById('typing-indicator');
-                if (typingIndicator) {
-                    typingIndicator.classList.remove('hidden');
-                    typingIndicator.classList.add('flex');
-                }
-                
+               
                 // Send to server
                 // Use the global sendMessageToServer function if available
                 if (typeof window.sendMessageToServer === 'function') {
                     window.sendMessageToServer(message);
                 } else {
                     // Fallback implementation
-                    fetch('/api/chat', {
+                    fetch('http://localhost:3000/api/chat/message', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -124,11 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     })
                     .then(response => response.json())
                     .then(data => {
-                        // Hide typing indicator
-                        if (typingIndicator) {
-                            typingIndicator.classList.add('hidden');
-                            typingIndicator.classList.remove('flex');
-                        }
                         
                         // Add bot response
                         if (data.message) {
@@ -177,11 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        // Hide typing indicator
-                        if (typingIndicator) {
-                            typingIndicator.classList.add('hidden');
-                            typingIndicator.classList.remove('flex');
-                        }
                     });
                 }
             }

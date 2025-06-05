@@ -1,11 +1,13 @@
 // Utility to tell parent to resize iframe using state-based protocol
 function resizeIframeState(state, transitionDuration = 400) {
+    console.log('[Chatbot iframe] Calling resizeIframeState("' + state + '")');
     if (window.parent !== window) {
         window.parent.postMessage({
             type: 'chatbot-resize',
             state: state,
             transitionDuration: transitionDuration
         }, '*');
+        console.log('[Chatbot iframe] postMessage sent to parent:', { type: 'chatbot-resize', state, transitionDuration });
     }
 }
 
@@ -16,6 +18,7 @@ let chatOpened = false;
 let sessionId = localStorage.getItem('chatbot_session_id') || '';
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('[Chatbot iframe] DOMContentLoaded fired, script loaded.');
     // Initialize DOM elements
     const chatbox = document.getElementById('chatbox');
     const chatToggle = document.getElementById('chat-toggle');
@@ -24,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const refreshChat = document.getElementById('refresh-chat');
     const userInput = document.getElementById('user-input');
     const chatMessages = document.getElementById('chat-messages');
-    const typingIndicator = document.getElementById('typing-indicator');
+  
     const welcomeTimestamp = document.getElementById('welcome-timestamp');
     const typingStatus = document.querySelector('.typing-status');
     const fab = document.querySelector('#chat-toggle i'); // Moved fab declaration here to avoid redeclaration
@@ -36,12 +39,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to create a logo avatar with the new branding
     function createLogoAvatar() {
         const botAvatar = document.createElement('div');
-        botAvatar.style.width = '32px';
-        botAvatar.style.height = '32px';
+        botAvatar.style.minWidth = '32px';
+        botAvatar.style.minHeight = '32px';
         botAvatar.style.borderRadius = '40px';
-        botAvatar.style.borderWidth = '1px';
-        botAvatar.style.borderStyle = 'solid';
-        botAvatar.style.borderColor = 'rgba(255,255,255,0.2)';
+       
         botAvatar.style.display = 'flex';
         botAvatar.style.alignItems = 'center';
         botAvatar.style.justifyContent = 'center';
@@ -108,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             // Open a new tab or window with a scheduling page
-            window.open('https://calendly.com/your-team-scheduling-link', '_blank');
+            window.open('https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1DWDVBt5otBEMOih2n9JJlORLYRklNjxEuKoZ6UcCjuhq8SsOxz8VvtMxjz0NPuZplBRA21bO6', '_blank');
         });
         
         return scheduleButton;
@@ -256,34 +257,79 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Insert the container after the last bot message div
         chatMessages.insertBefore(suggestedQuestionsContainer, lastBotMessageDiv.nextSibling);
-    }
-    
     // Initialize chat container and visibility state - using global state variables
     
-    // Open chat function
-    function openChat() {
+    // Listen for open trigger from parent
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.type === 'chatbot-open') {
+            resizeIframeState('open');
+        }
+    });
+
+    // Expand iframe when chatbar-form is clicked
+    const chatbarForm = document.getElementById('chatbar-form');
+    let hasRequestedResize = false;
+    if (chatbarForm) {
+        console.log('[Chatbot iframe] chatbar-form found. Adding click listener.');
+        chatbarForm.addEventListener('click', function () {
+            if (!hasRequestedResize) {
+                hasRequestedResize = true;
+                console.log('[Chatbot iframe] chatbar-form clicked. Sending resizeIframeState("open")');
+                resizeIframeState('open');
+                // Do NOT call openChatboxUI() here; wait for parent signal
+            }
+        });
+    } else {
+        console.warn('[Chatbot iframe] chatbar-form element not found!');
+    }
+
+    // Listen for parent signal that iframe has finished expanding
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.type === 'chatbot-iframe-expanded') {
+            console.log('[Chatbot iframe] Received chatbot-iframe-expanded from parent. Now opening chatbox UI.');
+            openChatboxUI();
+            hasRequestedResize = false;
+        }
+    });
+
+    // Open chat function (now openChatboxUI)
+    function openChatboxUI() {
         if (!chatOpened) {
             chatOpened = true;
-            // Focus on input after opening
             setTimeout(() => {
                 if (userInput) userInput.focus();
             }, 300);
         }
-        
+        // Remove any hide/fade-out classes
+        chatbox.classList.remove('ct-chatbox-hide');
+        // Add fade-in-up animation
+        chatbox.classList.add('ct-chatbox-transition');
+        // Show chatbox
         chatbox.classList.remove('hidden');
         chatbox.classList.add('flex');
         isChatVisible = true;
-        resizeIframeState('open');
+        // Do NOT call resizeIframeState('open') here; handled by chatbar-form click and parent transition only
+        // Remove animation class after animation completes (cleanup)
+        setTimeout(() => {
+            chatbox.classList.remove('ct-chatbox-transition');
+        }, 400);
     }
-    
+
     // Close chat function
     function closeChatWindow() {
-        chatbox.classList.add('hidden');
-        chatbox.classList.remove('flex');
-        isChatVisible = false;
-        resizeIframeState('closed');
+        // Add fade-out-down animation
+        chatbox.classList.remove('ct-chatbox-transition');
+        chatbox.classList.add('ct-chatbox-hide');
+        // After animation, hide the chatbox
+        setTimeout(() => {
+            chatbox.classList.add('hidden');
+            chatbox.classList.remove('flex');
+            chatbox.classList.remove('ct-chatbox-hide');
+            isChatVisible = false;
+            resizeIframeState('closed');
+        }, 350);
     }
-    
+
     // Toggle chat visibility - disabled as we now use the input bar to control chat visibility
     // Our new chat-input-handler.js handles this functionality
     if (chatToggle && chatbox) {
@@ -293,7 +339,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close chat button event
     if (closeChat && chatbox) {
         closeChat.addEventListener('click', () => {
+            console.log('[Chatbot iframe] closeChat clicked. Sending resizeIframeState("closed")');
             closeChatWindow();
+            resizeIframeState('closed');
         });
     }
     
@@ -359,218 +407,125 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-    
+}
+
     // Send message function
     function sendMessage(e) {
         e.preventDefault();
-        
         function isValidMessage(msg) {
             return msg && msg.trim().length > 0 && msg.trim().length < 500;
         }
-        
         const message = userInput.value.trim();
-        
         if (!isValidMessage(message)) {
-            // Show error for invalid message
             if (message.length >= 500) {
                 alert('Message is too long. Please limit to 500 characters.');
             }
             return;
         }
-        
-        // Clear input
         userInput.value = '';
-        
-        // Remove any existing chips
         const existingChips = chatMessages.querySelector('.suggested-questions');
-        if (existingChips) {
-            existingChips.remove();
-        }
-        
-        // Add user message to chat - styled like bot message but without avatar
+        if (existingChips) existingChips.remove();
         const userMessageDiv = document.createElement('div');
         userMessageDiv.className = 'flex justify-end mb-4 animate-fade-in';
-      
-
-        
         const messageContainer = document.createElement('div');
-        messageContainer.className = 'user-message'; // Keep the class name
-        
+        messageContainer.className = 'user-message';
         const messageContent = document.createElement('div');
         messageContent.textContent = message;
-        messageContent.style.width = '100%'; // Ensure content takes full width in flexbox
-        
+        messageContent.style.width = '100%';
         messageContainer.appendChild(messageContent);
-        
         userMessageDiv.appendChild(messageContainer);
         chatMessages.appendChild(userMessageDiv);
-        
-        // Scroll to bottom
         scrollToBottom();
-        
-        // Send to server and get response
-        sendMessageToServer(message);
+        window.sendMessageToServer(message);
     }
-    
+
     // Function to send message to server - making it globally available
     window.sendMessageToServer = async function(message) {
+        
         try {
-            // Show typing indicator
-            typingIndicator.classList.remove('hidden');
-            typingIndicator.classList.add('flex');
-            typingIndicator.innerHTML = `
-                <div class="flex items-start gap-2">
-                    <img src="./images/Logo-1.png" alt="Bot" class="h-8 w-8 rounded-full">
-                    <div class="bg-primary/5 rounded-xl px-4 py-2 inline-block">
-                        <div class="flex gap-1 items-center">
-                            <div class="w-2 h-2 bg-primary/30 rounded-full animate-pulse"></div>
-                            <div class="w-2 h-2 bg-primary/30 rounded-full animate-pulse delay-100"></div>
-                            <div class="w-2 h-2 bg-primary/30 rounded-full animate-pulse delay-200"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
+           
             // Make sure chat is visible
             if (chatbox.classList.contains('hidden')) {
                 openChat();
             }
-            
             // Prepare request body with session ID if available
             const requestBody = JSON.stringify({ 
                 message,
                 sessionId: sessionId
             });
-            
             // Send message to server
-            const response = await fetch('/api/chat/message', {
+            const response = await fetch('http://localhost:3000/api/chat/message', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: requestBody
             });
-            
-            // Check if response is ok
             if (!response.ok) {
                 throw new Error(`Server responded with status: ${response.status}`);
             }
-            
-            // Parse response
             const data = await response.json();
-            
-            // Save session ID if provided
             if (data.sessionId) {
                 sessionId = data.sessionId;
                 localStorage.setItem('chatbot_session_id', sessionId);
                 console.log('Session ID saved:', sessionId);
             }
-            
-            // Hide typing indicator
-            typingIndicator.classList.add('hidden');
-            typingIndicator.classList.remove('flex');
-            
-            // Check for error
+        
             if (data.error) {
                 console.error('Error from server:', data.error);
-                
-                // Add error message to chat
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
-                
-                // Use the createLogoAvatar function
                 const botAvatar = createLogoAvatar();
-                
                 const messageContainer = document.createElement('div');
                 messageContainer.className = 'bot-message error';
-                
                 const messageContent = document.createElement('div');
                 messageContent.innerHTML = 'Sorry, I encountered an error processing your request. Please try again later.';
-                messageContent.style.width = '100%'; // Ensure content takes full width in flexbox
-                
+                messageContent.style.width = '100%';
                 messageContainer.appendChild(messageContent);
-                
                 errorDiv.appendChild(botAvatar);
                 errorDiv.appendChild(messageContainer);
                 chatMessages.appendChild(errorDiv);
-                
-                // Render schedule call button without suggested questions
                 renderQuestionChips([]);
-                
-                // Scroll to bottom
                 scrollToBottom();
                 return;
             }
-            
-            // Format and add bot response to chat
             const botResponseDiv = document.createElement('div');
             botResponseDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
-
-            // Use the createLogoAvatar function
             const botAvatar = createLogoAvatar();
-
-            // Fix: define messageContainer and children
             const messageContainer = document.createElement('div');
             messageContainer.className = 'bot-message';
-
             const messageContent = document.createElement('div');
             messageContent.innerHTML = data.response;
-            messageContent.style.width = '100%'; // Ensure content takes full width in flexbox
-
+            messageContent.style.width = '100%';
             messageContainer.appendChild(messageContent);
-            
             botResponseDiv.appendChild(botAvatar);
             botResponseDiv.appendChild(messageContainer);
             chatMessages.appendChild(botResponseDiv);
-
-            // Check for suggested questions in the response
             if (data.suggestedQuestions && data.suggestedQuestions.length > 0) {
                 renderQuestionChips(data.suggestedQuestions);
             } else {
-                // If no suggested questions, still render the schedule call button
                 renderQuestionChips([]);
             }
-            
-            // Post-process any lists for better formatting
             postProcessStepLists();
-            
-            // Scroll to bottom
             scrollToBottom();
         } catch (error) {
             console.error('Error in sendMessage:', error);
-            
-            // Hide typing indicator
-            typingIndicator.classList.add('hidden');
-            typingIndicator.classList.remove('flex');
-            
-            // Add error message to chat
             const errorDiv = document.createElement('div');
             errorDiv.className = 'flex items-start gap-2 mb-4 animate-fade-in';
-            
-            // Use the createLogoAvatar function
             const botAvatar = createLogoAvatar();
-            
             const messageContainer = document.createElement('div');
             messageContainer.className = 'bot-message error';
-            
             const messageContent = document.createElement('div');
             messageContent.innerHTML = 'Sorry, I encountered an error connecting to the server. Please check your connection and try again.';
-            messageContent.style.width = '100%'; // Ensure content takes full width in flexbox
-            
+            messageContent.style.width = '100%';
             messageContainer.appendChild(messageContent);
-            
             errorDiv.appendChild(botAvatar);
             errorDiv.appendChild(messageContainer);
             chatMessages.appendChild(errorDiv);
-            
-            // Render schedule call button without suggested questions
             renderQuestionChips([]);
-            
-            // Scroll to bottom
             scrollToBottom();
         }
     }
-    
     // Function to scroll to the bottom of the chat with smooth animation
     function scrollToBottom() {
         if (chatMessages) {
@@ -618,8 +573,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             titleElements.forEach(title => {
                 title.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
-                title.style.fontWeight = "600";
-                title.style.fontSize = "20px";
+                title.style.fontWeight = "700";
+                title.style.fontSize = "16px";
                 title.style.lineHeight = "150%";
                 title.style.letterSpacing = "0%";
                 title.style.color = "var(--color-text)";

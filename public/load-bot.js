@@ -3,82 +3,88 @@
   if (window.__CT_CHATBOT_LOADED) return;
   window.__CT_CHATBOT_LOADED = true;
 
+  // Create the container div
+  const container = document.createElement('div');
+  container.id = 'chatbot-container';
+  container.style.position = 'fixed';
+  container.style.left = '50%';
+  container.style.bottom = '24px';
+  container.style.transform = 'translateX(-50%)';
+  container.style.zIndex = '9999';
+  container.style.margin = '0';
+  container.style.padding = '0';
+  container.style.pointerEvents = 'auto';
+  container.style.cursor = 'pointer';
+  container.style.background = 'transparent';
+  container.style.transition = 'all 0.3s ease';
+  document.body.appendChild(container);
+
   // Create the iframe
   const iframe = document.createElement('iframe');
   iframe.id = 'chatbot-iframe';
-  iframe.src = 'http://localhost:3000/';
-  iframe.style.position = 'fixed';
-  iframe.style.bottom = '24px';
-  iframe.style.right = '24px';
-  // Set transition before width/height for smooth initial render (using 0.4s to match chat-custom.css)
-  iframe.style.transition = 'none';
-  iframe.style.width = '64px'; // Minimized/icon state by default
-  iframe.style.height = '64px'; // Minimized/icon state by default
+  iframe.src = 'http://localhost:3000/'; // Replace with production URL
+  iframe.style.width = '337px';
+  iframe.style.height = '48px';
   iframe.style.border = 'none';
-  iframe.style.borderRadius = '50%';
-  iframe.style.zIndex = '9999';
+  iframe.style.borderRadius = '44px';
+  iframe.style.pointerEvents = 'auto';
   iframe.style.background = 'transparent';
   iframe.allow = 'clipboard-write';
   iframe.title = 'Chatbot';
-  document.body.appendChild(iframe);
+  iframe.style.transition = 'width 0.3s ease, height 0.3s ease, border-radius 0.3s ease';
 
-  // Parent-side resize handler
+  container.appendChild(iframe);
+
+  function expandIframe() {
+    iframe.style.width = '100vw';
+    iframe.style.height = '100vh';
+    iframe.style.borderRadius = '0px';
+    container.style.left = '0';
+    container.style.bottom = '0';
+    container.style.transform = 'none';
+    container.style.width = '100vw';
+    container.style.height = '100vh';
+    container.style.cursor = '';
+    window.__CT_CHATBOT_EXPANDED = true;
+  }
+
+  function minimizeIframe() {
+    iframe.style.width = '337px';
+    iframe.style.height = '48px';
+    iframe.style.borderRadius = '44px';
+    container.style.left = '50%';
+    container.style.bottom = '24px';
+    container.style.transform = 'translateX(-50%)';
+    container.style.width = '';
+    container.style.height = '';
+    container.style.cursor = 'pointer';
+    window.__CT_CHATBOT_EXPANDED = false;
+    hasNotifiedIframe = false;
+  }
+
+  // Listen for resize messages
   window.addEventListener('message', function (event) {
-    if (event.data?.type === 'chatbot-resize') {
-      const iframe = document.getElementById('chatbot-iframe');
-      if (!iframe) return;
-
-      // Apply transition property first
-      iframe.style.transition = 'none';
-
-      // Debug: log received event
-      // console.log('[Chatbot Iframe] Received resize event:', event.data);
-      requestAnimationFrame(() => {
-        let targetWidth, targetHeight, targetRadius, targetZ;
-        if (event.data.state === 'maximized' || event.data.state === 'open') {
-          targetWidth = '100vw';
-          targetHeight = '100vh';
-          targetRadius = '16px';
-          targetZ = '10000';
-          targetBottom = '24px';
-          targetRight = '24px';
-        } else {
-          targetWidth = '64px';
-          targetHeight = '64px';
-          targetRadius = '50%';
-          targetZ = '9999';
-          targetBottom = '24px';
-          targetRight = '24px';
-        }
-        // Defensive: never set to 0px
-        if (targetWidth !== '0px' && targetHeight !== '0px') {
-          // Force reflow before changing size
-          void iframe.offsetWidth;
-          // console.log('[Chatbot Iframe] Before resize:', {
-          //   width: iframe.style.width,
-          //   height: iframe.style.height,
-          //   bottom: iframe.style.bottom,
-          //   right: iframe.style.right,
-          //   state: event.data.state
-          // });
-          iframe.style.width = targetWidth;
-          iframe.style.height = targetHeight;
-          iframe.style.borderRadius = targetRadius;
-          iframe.style.zIndex = targetZ;
-          iframe.style.bottom = targetBottom;
-          iframe.style.right = targetRight;
-          // Log after a short delay to catch the new value
-          setTimeout(() => {
-            // console.log('[Chatbot Iframe] After resize:', {
-            //   width: iframe.style.width,
-            //   height: iframe.style.height,
-            //   bottom: iframe.style.bottom,
-            //   right: iframe.style.right,
-            //   state: event.data.state
-            // });
-          }, 50);
-        }
-      });
+    console.log('[Chatbot loader] Received message from iframe:', event.data);
+    if (event.data && event.data.type === 'chatbot-resize') {
+      if (event.data.state === 'open' || event.data.state === 'maximized') {
+        expandIframe();
+      } else if (event.data.state === 'closed' || event.data.state === 'minimized') {
+        minimizeIframe();
+      }
     }
   });
+
+  // Notify iframe after transition
+  let hasNotifiedIframe = false;
+  iframe.addEventListener('transitionend', function (e) {
+    console.log('[Chatbot loader] iframe transitionend:', e.propertyName, 'Current size:', iframe.style.width, iframe.style.height);
+    if (e.propertyName === 'width' && window.__CT_CHATBOT_EXPANDED && !hasNotifiedIframe) {
+      if (iframe.style.width === '100vw') {
+        hasNotifiedIframe = true;
+        iframe.contentWindow.postMessage({ type: 'chatbot-iframe-expanded' }, '*');
+        console.log('[Chatbot loader] Sent chatbot-iframe-expanded to iframe');
+      }
+    }
+  });
+
 })();

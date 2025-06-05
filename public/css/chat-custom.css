@@ -143,6 +143,7 @@ body {
   background-color: rgba(0, 0, 0, 0.02);
   box-shadow: 0 0 10px rgba(68, 61, 255, 0.1);
   animation: fadeIn 0.3s ease-out;
+  margin-top: 1rem;
   margin-bottom: 1rem;
   margin-left: auto;
 

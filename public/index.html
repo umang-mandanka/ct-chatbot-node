@@ -18,23 +18,8 @@
 <div id="chat-input-bar" class="fixed z-50 left-1/2 bottom-6 transform -translate-x-1/2 pointer-events-none" style="width: 337px; height: 48px; transition: width 0.3s ease;">
     <form id="chatbar-form" class="flex items-center gap-2 w-full h-full px-2 pointer-events-auto chatbar-glass">
       <!-- Left Logo -->
-      <div style="width: 24px; height: 24px; border-radius: 40px; border-width: 1px; border-style: solid; border-color: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; background: linear-gradient(90deg, #1350FF 0%, #D900FF 100%);">
-        <svg width="16" height="14" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g clip-path="url(#clip0_216_6931)">
-            <g clip-path="url(#clip1_216_6931)">
-              <path d="M16.3486 13.7776L18.0254 15.9953C18.5869 16.7345 18.0614 17.7802 17.1377 17.7805H3.20606C2.28223 17.7804 1.7568 16.7165 2.31837 15.9953L4.0088 13.7776H16.3486ZM11.0869 6.81857L16.3584 13.7776H16.3486L11.0869 6.81857ZM10.1983 6.37228C9.86789 6.37449 9.53628 6.52339 9.31153 6.81857L4.0088 13.7776H3.98536L9.31153 6.81857C9.53025 6.51934 9.86336 6.37046 10.1983 6.37228ZM10.1983 6.37228C10.5337 6.37003 10.8679 6.51885 11.0869 6.81857C10.8619 6.52289 10.5291 6.37408 10.1983 6.37228Z" fill="white"/>
-              <path d="M8.89528 0.779515C9.47499 0.022266 10.6164 0.022266 11.1961 0.779515L19.8006 12.174C20.2897 12.8411 19.8185 13.7785 18.9851 13.7785H16.3591L11.0867 6.81858C10.6338 6.22372 9.74605 6.22364 9.3113 6.81858L3.98513 13.7785H1.01442C0.181116 13.7785 -0.28969 12.8231 0.217547 12.174L8.89528 0.779515Z" fill="white"/>
-            </g>
-          </g>
-          <defs>
-            <clipPath id="clip0_216_6931">
-              <rect width="20" height="17.561" fill="white" transform="translate(0 0.219513)"/>
-            </clipPath>
-            <clipPath id="clip1_216_6931">
-              <rect width="20" height="17.561" fill="white" transform="translate(0 0.219757)"/>
-            </clipPath>
-          </defs>
-        </svg>
+      <div style="width: 24px; height: 24px;">
+        <img src="./images/3D Glassy Wave Sphere.gif" alt="3D Glassy Wave Sphere" width="32" height="32" style="border-radius: 50%; object-fit: cover;" />
       </div>
   
       <!-- Input Field -->
@@ -52,7 +37,7 @@
         width: 32px;
         height: 32px;
         border-radius: 32px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+       
         background: linear-gradient(90deg, #1350FF 0%, #D900FF 100%);
         display: flex;
         align-items: center;
@@ -167,7 +152,7 @@
         <div class="chat-header flex items-center gap-3 px-4 py-3" style="box-shadow: 0px 0px 10px 0px rgba(68, 61, 255, 0.25); border-bottom: 1px solid rgba(255, 255, 255, 1);">
             <div class="flex items-center " style="gap: 8px;">
                 <!-- New logo container with specified dimensions -->
-                <div style="width: 32px; height: 32px; border-radius: 40px; border-width: 1px; border-style: solid; border-color: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; background: linear-gradient(90deg, #1350FF 0%, #D900FF 100%);">
+                <div style="min-width: 32px; min-height: 32px; border-radius: 40px;  border-color: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; background: linear-gradient(90deg, #1350FF 0%, #D900FF 100%);">
                     <!-- New SVG logo -->
                     <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_216_6931)">
@@ -207,38 +192,7 @@
             <!-- Messages will be added dynamically by JavaScript -->
         </div>
         
-        <!-- Typing Indicator (initially hidden) -->
-        <div id="typing-indicator" class="hidden px-4 py-2">
-            <div class="flex items-start gap-2">
-                <!-- Logo container with same styling as header -->
-                <div style="width: 32px; height: 32px; border-radius: 40px; border-width: 1px; border-style: solid; border-color: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; background: linear-gradient(90deg, #1350FF 0%, #D900FF 100%);">
-                    <!-- SVG logo -->
-                    <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_216_6931)">
-                            <g clip-path="url(#clip1_216_6931)">
-                                <path d="M16.3486 13.7776L18.0254 15.9953C18.5869 16.7345 18.0614 17.7802 17.1377 17.7805H3.20606C2.28223 17.7804 1.7568 16.7165 2.31837 15.9953L4.0088 13.7776H16.3486ZM11.0869 6.81857L16.3584 13.7776H16.3486L11.0869 6.81857ZM10.1983 6.37228C9.86789 6.37449 9.53628 6.52339 9.31153 6.81857L4.0088 13.7776H3.98536L9.31153 6.81857C9.53025 6.51934 9.86336 6.37046 10.1983 6.37228ZM10.1983 6.37228C10.5337 6.37003 10.8679 6.51885 11.0869 6.81857C10.8619 6.52289 10.5291 6.37408 10.1983 6.37228Z" fill="white"/>
-                                <path d="M8.89528 0.779515C9.47499 0.022266 10.6164 0.022266 11.1961 0.779515L19.8006 12.174C20.2897 12.8411 19.8185 13.7785 18.9851 13.7785H16.3591L11.0867 6.81858C10.6338 6.22372 9.74605 6.22364 9.3113 6.81858L3.98513 13.7785H1.01442C0.181116 13.7785 -0.28969 12.8231 0.217547 12.174L8.89528 0.779515Z" fill="white"/>
-                            </g>
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_216_6931">
-                                <rect width="20" height="17.561" fill="white" transform="translate(0 0.219513)"/>
-                            </clipPath>
-                            <clipPath id="clip1_216_6931">
-                                <rect width="20" height="17.561" fill="white" transform="translate(0 0.219757)"/>
-                            </clipPath>
-                        </defs>
-                    </svg>
-                </div>
-                <div class="bg-primary/5 rounded-xl px-4 py-2 inline-block">
-                    <div class="flex gap-1 items-center">
-                        <div class="w-2 h-2 bg-primary/30 rounded-full animate-pulse"></div>
-                        <div class="w-2 h-2 bg-primary/30 rounded-full animate-pulse delay-100"></div>
-                        <div class="w-2 h-2 bg-primary/30 rounded-full animate-pulse delay-200"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
         
         
     </div>
